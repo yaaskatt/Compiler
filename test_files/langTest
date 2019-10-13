@@ -1,0 +1,36 @@
+List a;
+String s;
+s = "строка";
+a.add 6;
+int c;
+c = 5;
+int b;
+b = 5;
+print a.get(b-c);
+print (a.get 0);
+print ((a.get 0) + (a.get 0));
+b = a.get 0;
+b = (a.get 0) + b;
+Map m;
+m.put 5, 6;
+m.put (c+4), (6+2);
+m.put (a.get 0) + b, (m.get 9);
+b = 3;
+c = 10;
+if ((b == 3 || c != 2) && c>4 && ((a.get 0)>2)) then {
+    int k;
+    k = 0;
+    while c > 2 do {
+        print c;
+        c = c - 1;
+        k = k + 1;
+    }
+    print k;
+}
+else {
+    print b - c;
+}
+if (b > c)
+then {
+print "b > c";
+}

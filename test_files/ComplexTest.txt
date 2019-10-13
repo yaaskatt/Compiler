@@ -1,0 +1,24 @@
+String string;
+string = "Hello from outer scope";
+print string;
+int b;
+b = 0;
+while b < 10 do
+{
+print b;
+b = b + 1;
+int c;
+}
+if (b == 10) then {
+String s;
+s = "Hello from inner scope";
+print s;
+}
+print "Проверка set";
+Set c;
+c.add 1;
+c.add 3;
+print "Ожидается 0 1 0: ";
+print (c.contains 1);
+print (c.contains 2);
+print (c.contains 3);
