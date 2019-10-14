@@ -24,10 +24,26 @@ public class ParserTest {
             System.out.printf("tokenType: %s, lexema: %s\n", aTokenList.getTokenType(), aTokenList.getValue());
         }
         Parser parser = new Parser(tokenList);
-        List<Element> out = (parser.lang());
+        List<Element> out = parser.lang();
         assertEquals(tokenList.size()-1, parser.num);
         for (int i=0; i<out.size(); i++) {
             System.out.printf("%d: type: %s, value: %s\n", i, out.get(i).getType(), out.get(i).getValue());
+        }
+    }
+
+    @Test
+    public void triad() {
+        Lexer lexer = new Lexer(testFolder + "triadsTest");
+        List<Token> tokenList = lexer.getAllTokens();
+        assertFalse(tokenList.isEmpty());
+        for (Token aTokenList : tokenList) {
+            System.out.printf("tokenType: %s, lexema: %s\n", aTokenList.getTokenType(), aTokenList.getValue());
+        }
+        Parser parser = new Parser(tokenList);
+        List<Triad> out = parser.triads();
+        for (int i=0; i<out.size(); i++) {
+            Triad curTriad = out.get(i);
+            System.out.printf("%d: %s(%s, %s)\n", i, curTriad.op.getValue(), curTriad.el1.getValue(), curTriad.el2.getValue());
         }
     }
 }

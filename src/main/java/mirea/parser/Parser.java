@@ -14,6 +14,8 @@ public class Parser {
     private Token curToken;
     private int lastNumInPrefix = -1;
     int num = -1;
+    private List<Triad> triads = new ArrayList<>();
+    private Stack<Triad> trS = new Stack<>();
 
     public Parser(List<Token> inp) {
         this.inp = inp;
@@ -23,6 +25,13 @@ public class Parser {
         while (expr()) {
         }
         return out;
+    }
+
+    public List<Triad> triads() {
+        for (Token token : inp) {
+            toTriads(token);
+        }
+        return triads;
     }
 
     private boolean expr() {
@@ -382,6 +391,46 @@ public class Parser {
                 return new Element("STRING", token.getValue().substring(1, token.getValue().length()-1));
             default:
                 return new Element(token);
+        }
+    }
+
+    private void toTriads(Token token) {
+        switch (token.getTokenType().name()) {
+            case "INT":
+                if (trS.size() == 0) {
+                    trS.push(new Triad());
+                    trS.peek().setEl1(toElement(token));
+                }
+                else if (trS.peek().el2 == null) {
+                    trS.peek().setEl2(toElement(token));
+                }
+                break;
+            case "OP":
+                if (trS.peek().el1 != null && trS.peek().op == null) {
+                    trS.peek().setOp(token);
+                }
+                else if (priority(token) <= priority(trS.peek().op)) {
+
+                    triads.add(trS.pop());
+                    while (trS.size() != 0) {
+                        trS.peek().setUnknownElement(new Element("REF", "^" + (triads.size()-1)));
+                        triads.add(trS.pop());
+                    }
+                    trS.push(new Triad(token));
+                }
+                else {
+                    Element el1 = trS.peek().el2;
+                    trS.peek().setEl2(null);
+                    trS.push(new Triad(token));
+                    trS.peek().setEl1(el1);
+                }
+                break;
+            case "SEMI":
+                while (trS.size() != 0) {
+                    trS.peek().setUnknownElement(new Element("REF", "^" + (triads.size()-1)));
+                    triads.add(trS.pop());
+                }
+                break;
         }
     }
 
