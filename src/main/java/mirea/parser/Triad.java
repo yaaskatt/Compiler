@@ -3,28 +3,29 @@ package mirea.parser;
 import mirea.lexer.Token;
 
 public class Triad {
-    Token op;
+    Element op;
     Element el1;
     Element el2;
 
     public Triad() {
     }
 
-    public Triad(Token op) {
+    public Triad(Element op) {
         this.op = op;
     }
 
-    public Triad(Element el1) {
+    public Triad(Element op, Element el1) {
+        this.op = op;
         this.el1 = el1;
     }
 
-    public Triad(Token op, Element el1, Element el2) {
+    public Triad(Element op, Element el1, Element el2) {
         this.op = op;
         this.el1 = el1;
         this.el2 = el2;
     }
 
-    public void setOp(Token op) {
+    public void setOp(Element op) {
         this.op = op;
     }
 

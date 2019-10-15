@@ -43,7 +43,8 @@ public class ParserTest {
         List<Triad> out = parser.triads();
         for (int i=0; i<out.size(); i++) {
             Triad curTriad = out.get(i);
-            System.out.printf("%d: %s(%s, %s)\n", i, curTriad.op.getValue(), curTriad.el1.getValue(), curTriad.el2.getValue());
+            System.out.printf("%d: %s(%s %s, %s %s)\n", i, curTriad.op.getValue(), curTriad.el1.getType(),
+                    curTriad.el1.getValue(), curTriad.el2.getType(), curTriad.el2.getValue());
         }
     }
 }

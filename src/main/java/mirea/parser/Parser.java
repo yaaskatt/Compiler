@@ -30,6 +30,7 @@ public class Parser {
     public List<Triad> triads() {
         for (Token token : inp) {
             toTriads(token);
+            num++;
         }
         return triads;
     }
@@ -396,8 +397,21 @@ public class Parser {
 
     private void toTriads(Token token) {
         switch (token.getTokenType().name()) {
+
+            case "TYPE":
+                trS.push(new Triad(toElement(token)));
+                trS.peek().setEl2(new Element(token.getValue().toUpperCase(), "0"));
+                break;
+            case "DOUBLE":
             case "INT":
-                if (trS.size() == 0) {
+            case "STRING":
+            case "VAR":
+                if (!trS.isEmpty() && (trS.peek().op.getValue().equals("PRINT") ||
+                        trS.peek().op.getType().equals("DEF"))) {
+                    trS.peek().setEl1(toElement(token));
+                    break;
+                }
+                if (trS.isEmpty() || trS.peek().op.getValue().equals("(")) {
                     trS.push(new Triad());
                     trS.peek().setEl1(toElement(token));
                 }
@@ -405,33 +419,62 @@ public class Parser {
                     trS.peek().setEl2(toElement(token));
                 }
                 break;
+            case "ASSIGN_OP":
+                trS.peek().setOp(toElement(token));
+                break;
             case "OP":
+                if (token.getValue().equals("-") && trS.peek().op != null && (trS.peek().op.getValue().equals("(") ||
+                        (trS.peek().op).getType().equals("OP") && trS.peek().el2 == null)) {
+                    trS.push(new Triad(toElement(token), new Element("INT", "0")));
+                    break;
+                }
+            case "GET":
+            case "ADD":
+            case "PUT":
+            case "CONTAINS":
                 if (trS.peek().el1 != null && trS.peek().op == null) {
-                    trS.peek().setOp(token);
+                    trS.peek().setOp(toElement(token));
                 }
                 else if (priority(token) <= priority(trS.peek().op)) {
-
-                    triads.add(trS.pop());
-                    while (trS.size() != 0) {
-                        trS.peek().setUnknownElement(new Element("REF", "^" + (triads.size()-1)));
-                        triads.add(trS.pop());
+                    makeRefAndPop();
+                    while (!trS.peek().op.getValue().equals("=") && trS.size() != 0) {
+                        makeRefAndPop();
                     }
-                    trS.push(new Triad(token));
+                    trS.push(new Triad(toElement(token), new Element("REF", triads.size()-1 + "")));
                 }
                 else {
                     Element el1 = trS.peek().el2;
                     trS.peek().setEl2(null);
-                    trS.push(new Triad(token));
+                    trS.push(new Triad(toElement(token)));
                     trS.peek().setEl1(el1);
                 }
                 break;
+            case "L_RB":
+                trS.push(new Triad(toElement(token)));
+                break;
+            case "R_RB":
+                if (trS.peek().op == null && trS.peek().el2 == null) {
+                    Element el = trS.pop().el1;
+                    trS.pop(); //Открывающая скобка
+                    trS.peek().setEl2(el);
+                    break;
+                }
+                while(!trS.peek().op.getValue().equals("(")) {
+                    makeRefAndPop();
+                }
+                trS.pop();
+                break;
             case "SEMI":
                 while (trS.size() != 0) {
-                    trS.peek().setUnknownElement(new Element("REF", "^" + (triads.size()-1)));
-                    triads.add(trS.pop());
+                    makeRefAndPop();
                 }
                 break;
         }
+    }
+
+    private void makeRefAndPop() {
+        trS.peek().setUnknownElement(new Element("REF", triads.size()-1 + ""));
+        triads.add(trS.pop());
     }
 
     private void toReverseNot(Token token) {
@@ -516,17 +559,28 @@ public class Parser {
         }
     }
 
-    private static int priority(Token token) {
-        if (token.getValue().equals("="))
-            return 1;
-        if (token.getValue().equals("||")) return 2;
-        if (token.getValue().equals("&&")) return 3;
-        if (token.getTokenType().equals(TokenType.COMP_OP))
-            return 4;
-        if (token.getValue().equals("-") || token.getValue().equals("+"))
-            return 5;
-        if (token.getValue().equals("*") || token.getValue().equals("/"))
-            return 6;
-        return 0;
+    private static int priority(Token t) {
+        return priority(t.getValue());
     }
+
+    private static int priority(Element el) {
+        return priority(el.getValue());
+    }
+
+    private static int priority(String v) {
+        if (v.equals("="))
+            return 1;
+        if (v.equals("||")) return 2;
+        if (v.equals("&&")) return 3;
+        if (v.equals(">") || v.equals("<") || v.equals(">=") || v.equals("<=") ||
+                v.equals(">=") || v.equals("==") || v.equals("!="))
+            return 4;
+        if (v.equals("-") || v.equals("+"))
+            return 5;
+        if (v.equals("*") || v.equals("/"))
+            return 6;
+        return 7;
+    }
+
+
 }
