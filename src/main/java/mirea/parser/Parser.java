@@ -376,7 +376,15 @@ public class Parser {
     }
 
     private Element toElement(Token token) {
-        switch (token.getTokenType().name()) {
+        String t = getElementTypeFromTokenType(token.getTokenType().name());
+        if (t != "STRING") {
+            return new Element(t, token.getValue());
+        }
+        else return new Element(t, token.getValue().substring(1, token.getValue().length()-1));
+    }
+
+    private String getElementTypeFromTokenType(String t) {
+        switch (t) {
             case "ASSIGN_OP":
             case "ADD":
             case "GET":
@@ -385,13 +393,13 @@ public class Parser {
             case "LOG_OP":
             case "COMP_OP":
             case "PRINT":
-                return new Element("OP", token.getValue());
+                return("OP");
             case "TYPE":
-                return new Element("DEF", token.getValue());
+                return("DEF");
             case "STRING":
-                return new Element("STRING", token.getValue().substring(1, token.getValue().length()-1));
+                return("STRING");
             default:
-                return new Element(token);
+                return t;
         }
     }
 
