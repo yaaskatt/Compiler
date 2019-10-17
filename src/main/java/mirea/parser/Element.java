@@ -7,17 +7,19 @@ public class Element implements ElementInterface {
     private String type;
     private String value;
 
-    Element(String type, String value) {
+    public Element(String type, String value) {
         this.type = type;
         this.value = value;
     }
 
-    Element(Token token) {
+    public Element(Token token) {
         this.type = token.getTokenType().name();
         this.value = token.getValue();
     }
 
-    Element() {
+    public Element() {
+        this.type = "";
+        this.value = "";
     }
 
     public String getType() {

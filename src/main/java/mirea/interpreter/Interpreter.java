@@ -25,7 +25,6 @@ class Interpreter {
     private final String STRING_TYPE = "STRING";
     private final String LIST_TYPE = "List";
     private final String SET_TYPE = "Set";
-    private final String MAP_TYPE = "Map";
     private final String OP_TYPE = "OP";
     private final String ADR_TYPE = "ADR";
     private final String VAR_TYPE = "VAR";
@@ -109,7 +108,6 @@ class Interpreter {
 
             case "add":     addEl( stack.pop(), stack.pop()); break;
             case "get":     getEl( stack.pop(), stack.pop()); break;
-            case "put":     putEl( stack.pop(), stack.pop(), stack.pop()); break;
             case "contains": containsEl( stack.pop(), stack.pop()); break;
 
             case "print":   System.out.println("" + stack.pop().getValue()); break;
@@ -400,11 +398,6 @@ class Interpreter {
                 val = list.get(intVal(index.getValue()));
                 logger.fine("Got " + inp.getValue() + "[" + index + "]=" + val);
                 break;
-            case MAP_TYPE:
-                @SuppressWarnings("unchecked") Map<Integer, Integer> map = (HashMap<Integer, Integer>) record.getValue();
-                val = map.get(intVal(index.getValue()));
-                logger.fine("Got " + inp.getValue() + "[" + index + "]=" + val);
-                break;
             default:
                 throw new InterpreterException("Calling get on " + record.getType() + " variable.");
         }
@@ -419,17 +412,6 @@ class Interpreter {
      * @param inp should be MAP_TYPE
      * @throws InterpreterException when type other than map
      */
-    private void putEl(ElementInterface val, ElementInterface key, ElementInterface inp)
-            throws InterpreterException {
-        Record record = symbolTable.lookup(inp.getValue());
-        if (!record.getType().equals(MAP_TYPE)) {
-            throw new InterpreterException("Trying putting to: " + record.getType() + ", required: MAP.");
-        }
-        @SuppressWarnings("unchecked")Map<Integer, Integer> map =(HashMap<Integer, Integer>) record.getValue();
-        map.put(intVal(key.getValue()), intVal(val.getValue()));
-        logger.fine("Put to " + inp.getValue() + " [" + key.getValue() + "," + val.getValue() + "]");
-
-    }
 
     /**
      * Checks if condition is met.
@@ -469,7 +451,6 @@ class Interpreter {
         logger.fine("Symbol table insert symbol " + name + " type " + type);
         if (type.equals(LIST_TYPE)) value = new CustomList<Integer>(); // int list
         if (type.equals(SET_TYPE)) value = new CustomSet<Integer>(); // int list
-        if (type.equals(MAP_TYPE)) value = new HashMap<Integer, Integer>(); // int int map
         symbolTable.insertSymbol(new Record(name, value, type));
     }
 

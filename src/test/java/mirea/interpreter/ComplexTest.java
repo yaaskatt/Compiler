@@ -42,7 +42,7 @@ public class ComplexTest {
 
     @Test
     public void compTest2() throws Exception {
-        Lexer lexer = new Lexer(testFolder + "ComplexTest.txt");
+        Lexer lexer = new Lexer(testFolder + "compTest.txt");
         List<Token> tokenList = lexer.getAllTokens();
         assertFalse(tokenList.isEmpty());
         Parser parser = new Parser(tokenList);

@@ -26,7 +26,7 @@ public enum TokenType {
     THEN ("then"),
     ELSE ("else"),
     PRINT ("print"),
-    TYPE ("(double|int|List|Map|Set|String)"),
+    TYPE ("(double|int|List|Set|String)"),
     VAR ("([a-zA-Z]|_)+\\w*"),
     DOUBLE ("(0|[1-9][0-9]*)\\.[0-9]+"),
     INT ("(0|[1-9][0-9]*)"),
