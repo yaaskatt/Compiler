@@ -29,7 +29,7 @@ public class Calculator {
         return null;
     }
 
-    public ParserToken dif(ParserToken arg1, ParserToken arg2) {
+    public ParserToken dif(ParserToken arg2, ParserToken arg1) {
         String type = getTypeForSimpleOp(arg1, arg2);
         switch(type) {
             case Name.INT:
@@ -40,7 +40,7 @@ public class Calculator {
         return null;
     }
 
-    public ParserToken mult(ParserToken arg1, ParserToken arg2) {
+    public ParserToken mult(ParserToken arg2, ParserToken arg1) {
         String type = getTypeForSimpleOp(arg1, arg2);
         switch(type) {
             case Name.INT:
@@ -51,7 +51,7 @@ public class Calculator {
         return null;
     }
 
-    public ParserToken div(ParserToken arg1, ParserToken arg2) {
+    public ParserToken div(ParserToken arg2, ParserToken arg1) {
         String type = getTypeForSimpleOp(arg1, arg2);
         switch(type) {
             case Name.INT:
@@ -62,7 +62,7 @@ public class Calculator {
         return null;
     }
 
-    private String getTypeForSimpleOp(ParserToken arg1, ParserToken arg2) {
+    private String getTypeForSimpleOp(ParserToken arg2, ParserToken arg1) {
         if (!arg1.getType().equals(arg2.getType()))
             logger.warning("Types mismatch(" + arg1.getType() + "-" + arg2.getType() +
                     "): consider reviewing your code");
@@ -80,32 +80,32 @@ public class Calculator {
     }
 
     public ParserToken isNotEq(ParserToken arg2, ParserToken arg1)
-            throws InterpreterException {
+            throws Exception {
         return new ParserToken(Name.INT, boolToInt(compareToken(arg1, arg2) != 0).toString());
     }
 
     public ParserToken isEq(ParserToken arg2, ParserToken arg1)
-            throws InterpreterException {
+            throws Exception {
         return new ParserToken(Name.INT, boolToInt(compareToken(arg1, arg2) == 0).toString());
     }
 
     public ParserToken isLessOrEq(ParserToken arg2, ParserToken arg1)
-            throws InterpreterException {
+            throws Exception {
         return new ParserToken(Name.INT, boolToInt(compareToken(arg1, arg2) <= 0).toString());
     }
 
     public ParserToken isBiggerOrEq(ParserToken arg2, ParserToken arg1)
-            throws InterpreterException {
+            throws Exception {
         return new ParserToken(Name.INT, boolToInt(compareToken(arg1, arg2) >= 0).toString());
     }
 
     public ParserToken isBigger(ParserToken arg2, ParserToken arg1)
-            throws InterpreterException {
+            throws Exception {
         return new ParserToken(Name.INT, boolToInt(compareToken(arg1, arg2) > 0).toString());
     }
 
     public ParserToken isLess(ParserToken arg2, ParserToken arg1)
-            throws InterpreterException {
+            throws Exception {
         return new ParserToken(Name.INT, boolToInt(compareToken(arg1, arg2) < 0).toString());
     }
 
@@ -117,7 +117,7 @@ public class Calculator {
         return b == 0;
     }
 
-    private int compareToken(ParserToken arg1, ParserToken arg2) throws InterpreterException {
+    private int compareToken(ParserToken arg2, ParserToken arg1) throws Exception {
         if (!arg1.getType().equals(arg2.getType()))
             logger.warning("Types mismatch(" + arg1.getType() + "+" + arg2.getType() +
                     "): consider reviewing your code");
@@ -133,16 +133,16 @@ public class Calculator {
                 return arg1.getValue().compareTo(arg2.getValue());
             default:
                 logger.severe("Can not compare type " + arg1.getType());
-                throw new InterpreterException("Comparison of type " + arg1.getType() +
+                throw new Exception("Comparison of type " + arg1.getType() +
                         " is not supported");
         }
     }
 
-    public ParserToken contains(ParserToken el, ParserToken var) throws InterpreterException {
+    public ParserToken contains(ParserToken el, ParserToken var) throws Exception {
         Record record = symbolTable.lookup(var.getValue());
 
         if (!el.getType().equals(Name.INT)) {
-            throw new InterpreterException("Type mismatch: " + el.getType() + ", required: INT");
+            throw new Exception("Type mismatch: " + el.getType() + ", required: INT");
         }
 
         switch (record.getType()) {
@@ -152,14 +152,14 @@ public class Calculator {
             case Name.SET:
                 @SuppressWarnings("unchecked") CustomSet<Integer> set = (CustomSet<Integer>) record.getValue();
                 return new ParserToken(Name.INT, boolToInt(set.contains(Integer.parseInt(el.getValue()))).toString());
-            default: throw new InterpreterException("Trying yo put to type " + record.getType());
+            default: throw new Exception("Trying yo put to type " + record.getType());
         }
     }
 
-    public ParserToken get(ParserToken index, ParserToken var) throws InterpreterException {
+    public ParserToken get(ParserToken index, ParserToken var) throws Exception {
         Record record = symbolTable.lookup(var.getValue());
         Integer val;
-        if (record == null) throw new InterpreterException("Variable " + var.getValue() + " is not defined" +
+        if (record == null) throw new Exception("Variable " + var.getValue() + " is not defined" +
                 " in this scope");
 
         switch (record.getType()) {
@@ -169,7 +169,7 @@ public class Calculator {
                 logger.fine("Got " + var.getValue() + "[" + index + "]=" + val);
                 break;
             default:
-                throw new InterpreterException("Calling get on " + record.getType() + " variable.");
+                throw new Exception("Calling get on " + record.getType() + " variable.");
         }
         if (val != null) return new ParserToken(Name.INT, val.toString());
         return null;

@@ -29,14 +29,16 @@ public class OptTest {
         for (int i=0; i<triads.size(); i++) {
             Triad tr = triads.get(i);
             System.out.printf("%d: %s %s (%s %s, %s %s)\n", i, tr.getOp().getType(), tr.getOp().getValue(),
-                    tr. getEl1().getType(), tr.getEl1().getValue(), tr.getEl2().getType(), tr.getEl2().getValue());
+                    tr.getT1().getType(), tr.getT1().getValue(), tr.getT2().getType(), tr.getT2().getValue());
         }
         Opt opt = new Opt();
-        triads = opt.findConstants(triads);
+        try {
+            triads = opt.findConstants(triads);
+        } catch (Exception e) {};
         for (int i=0; i<triads.size(); i++) {
             Triad tr = triads.get(i);
             System.out.printf("%d: %s %s (%s %s, %s %s)\n", i, tr.getOp().getType(), tr.getOp().getValue(),
-                    tr. getEl1().getType(), tr.getEl1().getValue(), tr.getEl2().getType(), tr.getEl2().getValue());
+                    tr.getT1().getType(), tr.getT1().getValue(), tr.getT2().getType(), tr.getT2().getValue());
         }
         parserTokenList = conv.triads_toReverseNot(triads);
         for (int i = 0; i< parserTokenList.size(); i++) {

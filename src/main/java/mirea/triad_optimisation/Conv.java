@@ -54,9 +54,9 @@ public class Conv {
         for (int i=0; i<inp.size(); i++) {
             Triad curTriad = inp.get(i);
             if (curTriad.getOp().getType().equals("CONST")) continue;
-            if (curTriad.getEl2().notBlank())
-                revNot.add(curTriad.getEl2());
-            revNot.add(curTriad.getEl1());
+            if (curTriad.getT2().notBlank())
+                revNot.add(curTriad.getT2());
+            revNot.add(curTriad.getT1());
             revNot.add(curTriad.getOp());
         }
         return revNot;

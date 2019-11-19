@@ -3,8 +3,8 @@ import mirea.parser.ParserToken;
 
 public class Triad {
     private ParserToken op;
-    private ParserToken el1;
-    private ParserToken el2;
+    private ParserToken t1;
+    private ParserToken t2;
 
     public Triad() {
     }
@@ -13,52 +13,52 @@ public class Triad {
         this.op = op;
     }
 
-    public Triad(ParserToken op, ParserToken el1) {
+    public Triad(ParserToken op, ParserToken t1) {
         this.op = op;
-        this.el1 = el1;
+        this.t1 = t1;
     }
 
-    public Triad(ParserToken op, ParserToken el1, ParserToken el2) {
+    public Triad(ParserToken op, ParserToken t1, ParserToken t2) {
         this.op = op;
-        this.el1 = el1;
-        this.el2 = el2;
+        this.t1 = t1;
+        this.t2 = t2;
     }
 
     public ParserToken getOp() {
         return this.op;
     }
 
-    public ParserToken getEl1() {
-        return el1;
+    public ParserToken getT1() {
+        return t1;
     }
 
-    public ParserToken getEl2() {
-        return el2;
+    public ParserToken getT2() {
+        return t2;
     }
 
     public void setOp(ParserToken op) {
         this.op = op;
     }
 
-    public void setEl1(ParserToken el1) {
-        this.el1 = el1;
+    public void setT1(ParserToken t1) {
+        this.t1 = t1;
     }
 
-    public void setEl2(ParserToken el2) {
-        this.el2 = el2;
+    public void setT2(ParserToken t2) {
+        this.t2 = t2;
     }
 
     public void setUnknownElement(ParserToken el) {
-        if (el1 == null) el1 = el;
-        else if (el2 == null) el2 = el;
+        if (t1 == null) t1 = el;
+        else if (t2 == null) t2 = el;
     }
 
     @Override
     public boolean equals(Object obj) {
         Triad t = (Triad)obj;
         if (this.getOp().equals(t.getOp()) &&
-                this.getEl1().equals(t.getEl1()) &&
-                this.getEl2().equals(t.getEl2())) return true;
+                this.getT1().equals(t.getT1()) &&
+                this.getT2().equals(t.getT2())) return true;
         return false;
     }
 }

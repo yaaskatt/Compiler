@@ -37,20 +37,15 @@ class Interpreter {
         for (int i = 0; i < parserTokenList.size(); i++) {
             ParserToken token = parserTokenList.get(i);
              switch (token.getType()) {
-                 /* Обработка операторов(вычисления) */
                  case Name.OP:      processOp(token.getValue()); break;
-                 /* Области видимости */
                  case Name.ENTER_SCOPE:     symbolTable.enterScope(); break;
                  case Name.EXIT_SCOPE:      symbolTable.exitScope(); break;
-                 /* Обработка операндов(положить в стек) */
                  case Name.INT:
                  case Name.DOUBLE:
                  case Name.STRING:
                  case Name.ADR:     s.push(token); break;
                  case Name.VAR:     s.push(getSymData(token)); break;
-                 /* Объявления переменных */
                  case Name.DEF:     insertSym(s.pop().getValue(), token.getValue()); break;
-                 /* Переходы */
                  case Name.TRANS:
                      /* Безусловный переход */
                      if (token.getValue().equals("!")) i = Integer.parseInt(s.pop().getValue()) - 1;
@@ -96,30 +91,30 @@ class Interpreter {
     }
 
     private void assignVal(ParserToken token, ParserToken destination)
-            throws InterpreterException {
+            throws Exception {
         if (!destination.getType().equals(Name.ADR)){
-            throw new InterpreterException("Assigning destination  \"" + destination.getValue() +
+            throw new Exception("Assigning destination  \"" + destination.getValue() +
                     "\" must be address.");
         }
         Record destRec = symbolTable.lookup(destination.getValue());
         if (destRec == null) {
-            throw new InterpreterException("Variable " + destination.getValue()
+            throw new Exception("Variable " + destination.getValue()
                     + " is not defined in this scope.");
         }
         if (!destRec.getType().toUpperCase().equals(token.getType())){
             logger.severe("Type mismatch [" + destRec.getType() + ", " + token.getType() + "]");
-            throw new InterpreterException("Assigning type " + token.getType() + " to "
+            throw new Exception("Assigning type " + token.getType() + " to "
                     + destRec.getType());
         }
         destRec.setValue(token.getValue());
     }
 
     private void addEl(ParserToken token, ParserToken destination)
-            throws InterpreterException {
+            throws Exception {
         Record record = symbolTable.lookup(destination.getValue());
 
         if (!token.getType().equals(Name.INT)) {
-            throw new InterpreterException("Type mismatch: " + token.getType() + ", required: INT");
+            throw new Exception("Type mismatch: " + token.getType() + ", required: INT");
         }
 
         switch (record.getType()) {
@@ -131,22 +126,22 @@ class Interpreter {
                 @SuppressWarnings("unchecked") CustomSet<Integer> set = (CustomSet<Integer>) record.getValue();
                 set.add(Integer.parseInt(token.getValue()));
                 break;
-            default: throw new InterpreterException("Trying yo put to type " + record.getType());
+            default: throw new Exception("Trying yo put to type " + record.getType());
         }
         logger.fine("Put to " + destination.getValue() + " " + token);
     }
 
-    private boolean isTrue(ParserToken pop) throws InterpreterException {
+    private boolean isTrue(ParserToken pop) throws Exception {
         if (!pop.getType().equals(Name.INT)){
-            throw new InterpreterException("Condition type " + pop.getType() + "not supported");
+            throw new Exception("Condition type " + pop.getType() + "not supported");
         }
-        return Integer.parseInt(pop.getValue()) == 0;
+        return Integer.parseInt(pop.getValue()) == 1;
     }
 
 
-    private void insertSym(String name, String type) throws InterpreterException {
+    private void insertSym(String name, String type) throws Exception {
         if (symbolTable.localLookup(name) != null) {
-            throw new InterpreterException("Variable " + name + " is already defined in this scope.");
+            throw new Exception("Variable " + name + " is already defined in this scope.");
         }
         Object value = null;
         logger.fine("Symbol table insert symbol " + name + " type " + type);
@@ -156,10 +151,10 @@ class Interpreter {
     }
 
 
-    private ParserToken getSymData(ParserToken token) throws InterpreterException {
+    private ParserToken getSymData(ParserToken token) throws Exception {
         Record rec = symbolTable.lookup(token.getValue());
         if (rec == null) {
-            throw new InterpreterException("Variable " + token.getValue() +
+            throw new Exception("Variable " + token.getValue() +
                     " not defined in this scope.");
         }
         logger.fine("Got value for " + token.getType() + " " + token.getValue() +
