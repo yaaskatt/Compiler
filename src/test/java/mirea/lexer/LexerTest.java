@@ -11,9 +11,9 @@ public class LexerTest {
     @Test
     public void getAllTokens() {
         Lexer lexer = new Lexer(testFolder + "typesTest.txt");
-        List<Token> tokenList = lexer.getAllTokens();
-        for (Token aTokenList : tokenList) {
-            System.out.printf("tokenType: %s, value: %s\n", aTokenList.getTokenType(), aTokenList.getValue());
+        List<LexerToken> tokenList = lexer.getAllTokens();
+        for (LexerToken token : tokenList) {
+            System.out.printf("tokenType: %s, value: %s\n", token.getType(), token.getValue());
         }
     }
 }

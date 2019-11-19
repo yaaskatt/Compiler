@@ -1,10 +1,11 @@
 package mirea.triad_optimisation;
 
-import mirea.parser.Element;
+import mirea.parser.ParserToken;
 import mirea.structures.CustomList;
 import mirea.structures.CustomSet;
 import mirea.table.Record;
 import mirea.table.SymbolTable;
+import mirea.token.Name;
 
 import java.util.List;
 
@@ -12,41 +13,22 @@ public class Opt {
     private Conv conv = new Conv();
     SymbolTable table = new SymbolTable();
 
-    private final String INT_TYPE = "INT";
-    private final String DOUBLE_TYPE = "DOUBLE";
-    private final String STRING_TYPE = "STRING";
-    private final String LIST_TYPE = "List";
-    private final String SET_TYPE = "Set";
-    private final String OP_TYPE = "OP";
-    private final String ADR_TYPE = "ADR";
-    private final String VAR_TYPE = "VAR";
-    private final String DEF_TYPE = "DEF";
-    private final String TR_TYPE = "TRANS";
-    private final String LB_TYPE = "L_CB";
-    private final String RB_TYPE = "R_CB";
-    private final String REF_TYPE = "REF";
-    private final String CONST_TYPE = "CONST";
-
     public Opt () {
     }
 
-    private Element replaceVarWithValue(Element el) {
+    private ParserToken replaceVarWithValue(ParserToken el) {
         Record rec = table.lookup(el.getValue());
         if (rec != null) {
-            return new Element(rec.getType(), rec.getValue() + "");
+            return new ParserToken(rec.getType(), rec.getValue() + "");
         }
         return el;
     }
 
-    private Element replaceRefWithValue(Element el, List<Triad> triads) {
+    private ParserToken replaceRefWithValue(ParserToken el, List<Triad> triads) {
         int index = Integer.parseInt(el.getValue());
         if (triads.get(index).getOp().getType().equals("CONST")) {
             return triads.get(index).getEl1();
         }
-        return el;
-    }
-
-    private Element replaceWithConstant(Element el) {
         return el;
     }
 
@@ -58,47 +40,47 @@ public class Opt {
     }
 
     private boolean isConstant(String type) {
-        if (type.equals(INT_TYPE) || type.equals(DOUBLE_TYPE) || type.equals(STRING_TYPE)) {
+        if (type.equals(Name.INT) || type.equals(Name.DOUBLE) || type.equals(Name.STRING)) {
             return true;
         }
         return false;
     }
 
-    private String sum(String type, Element el1, Element el2) {
+    private String sum(String type, ParserToken el1, ParserToken el2) {
         switch(type) {
-            case INT_TYPE:
+            case Name.INT:
                 return (Integer.parseInt(el1.getValue()) + Integer.parseInt(el2.getValue())) + "";
-            case DOUBLE_TYPE:
+            case Name.DOUBLE:
                 return (Double.parseDouble(el1.getValue()) + Double.parseDouble(el2.getValue())) + "";
         }
         return "";
     }
 
-    private String dif(String type, Element el1, Element el2) {
+    private String dif(String type, ParserToken el1, ParserToken el2) {
         switch(type.toUpperCase()) {
-            case INT_TYPE:
+            case Name.INT:
                 return (Integer.parseInt(el1.getValue()) - Integer.parseInt(el2.getValue())) + "";
-            case DOUBLE_TYPE:
+            case Name.DOUBLE:
                 return (Double.parseDouble(el1.getValue()) - Double.parseDouble(el2.getValue())) + "";
         }
         return "";
     }
 
-    private String mult(String type, Element el1, Element el2) {
+    private String mult(String type, ParserToken el1, ParserToken el2) {
         switch(type) {
-            case INT_TYPE:
+            case Name.INT:
                 return (Integer.parseInt(el1.getValue()) * Integer.parseInt(el2.getValue())) + "";
-            case DOUBLE_TYPE:
+            case Name.DOUBLE:
                 return (Double.parseDouble(el1.getValue()) * Double.parseDouble(el2.getValue())) + "";
         }
         return "";
     }
 
-    private String div(String type, Element el1, Element el2) {
+    private String div(String type, ParserToken el1, ParserToken el2) {
         switch(type) {
-            case INT_TYPE:
+            case Name.INT:
                 return (Integer.parseInt(el1.getValue()) / Integer.parseInt(el2.getValue())) + "";
-            case DOUBLE_TYPE:
+            case Name.DOUBLE:
                 return (Double.parseDouble(el1.getValue()) / Double.parseDouble(el2.getValue())) + "";
         }
         return "";
@@ -112,52 +94,51 @@ public class Opt {
             Record rec;
             Triad curTriad = triads.get(i);
 
-            if (curTriad.getOp().getType() == DEF_TYPE) {
+            if (curTriad.getOp().getType() == Name.DEF) {
                 Object value = null;
-                if (curTriad.getOp().getType().equals(LIST_TYPE)) value = new CustomList<Integer>(); // int list
-                else if (curTriad.getOp().getType().equals(SET_TYPE)) value = new CustomSet<Integer>(); // int list
+                if (curTriad.getOp().getType().equals(Name.LIST)) value = new CustomList<Integer>();
+                else if (curTriad.getOp().getType().equals(Name.SET)) value = new CustomSet<Integer>();
                 table.insertSymbol(new Record(curTriad.getEl1().getValue(), value, curTriad.getOp().getValue()));
                 continue;
             }
 
-            if (curTriad.getEl1().getType().equals(VAR_TYPE)) {
+            if (curTriad.getEl1().getType().equals(Name.VAR)) {
                 curTriad.setEl1(replaceVarWithValue(curTriad.getEl1()));
             }
-            else if (curTriad.getEl1().getType().equals(REF_TYPE)) {
+            else if (curTriad.getEl1().getType().equals(Name.REF)) {
                 curTriad.setEl1(replaceRefWithValue(curTriad.getEl1(), triads));
             }
 
-            if (curTriad.getEl2().getType().equals(VAR_TYPE)) {
+            if (curTriad.getEl2().getType().equals(Name.VAR)) {
                 curTriad.setEl2(replaceVarWithValue(curTriad.getEl2()));
             }
-            else if (curTriad.getEl2().getType().equals(REF_TYPE)) {
+            else if (curTriad.getEl2().getType().equals(Name.REF)) {
                     curTriad.setEl2(replaceRefWithValue(curTriad.getEl2(), triads));
             }
 
-            if (curTriad.getOp().getType().equals(OP_TYPE) && isConstant(curTriad)) {
+            if (curTriad.getOp().getType().equals(Name.OP) && isConstant(curTriad)) {
                 String type = curTriad.getEl1().getType().toUpperCase();
                 boolean flag = false;
                 switch (curTriad.getOp().getValue()) {
                     case "+":
-                        curTriad.setEl1(new Element(type, sum(type, curTriad.getEl1(), curTriad.getEl2())));
+                        curTriad.setEl1(new ParserToken(type, sum(type, curTriad.getEl1(), curTriad.getEl2())));
                         flag = true;
                         break;
                     case "-":
-                        curTriad.setEl1(new Element(type, dif(type, curTriad.getEl1(), curTriad.getEl2())));
+                        curTriad.setEl1(new ParserToken(type, dif(type, curTriad.getEl1(), curTriad.getEl2())));
                         flag = true;
                         break;
                     case "*":
-                        curTriad.setEl1(new Element(type, mult(type, curTriad.getEl1(), curTriad.getEl2())));
+                        curTriad.setEl1(new ParserToken(type, mult(type, curTriad.getEl1(), curTriad.getEl2())));
                         flag = true;
                         break;
                     case "/":
-                        curTriad.setEl1(new Element(type, div(type, curTriad.getEl1(), curTriad.getEl2())));
+                        curTriad.setEl1(new ParserToken(type, div(type, curTriad.getEl1(), curTriad.getEl2())));
                         flag = true;
-                        break;
                 }
                 if (flag) {
-                    curTriad.setOp(new Element("CONST", type));
-                    curTriad.setEl2(new Element());
+                    curTriad.setOp(new ParserToken("CONST", type));
+                    curTriad.setEl2(new ParserToken());
                 }
 
             }
@@ -166,10 +147,10 @@ public class Opt {
                 rec = table.lookup(curTriad.getEl1().getValue());
                 if (rec != null) {
                     switch (curTriad.getEl2().getType().toUpperCase()) {
-                        case INT_TYPE:
-                        case DOUBLE_TYPE:
-                        case STRING_TYPE:
-                        case CONST_TYPE:
+                        case Name.INT:
+                        case Name.DOUBLE:
+                        case Name.STRING:
+                        case Name.CONST:
                             rec.setValue(curTriad.getEl2().getValue());
                             break;
                         default:

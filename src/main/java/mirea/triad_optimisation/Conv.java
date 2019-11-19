@@ -1,6 +1,6 @@
 package mirea.triad_optimisation;
 
-import mirea.parser.Element;
+import mirea.parser.ParserToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class Conv {
     public Conv() {
     }
 
-    public List<Triad> reverseNot_toTriads(List<Element> inp) {
+    public List<Triad> reverseNot_toTriads(List<ParserToken> inp) {
         List<Triad> triads = new ArrayList<Triad>();
         for (int i=0; i<inp.size(); i++) {
             switch(inp.get(i).getType()) {
@@ -49,8 +49,8 @@ public class Conv {
         return triads;
     }
 
-    public List<Element> triads_toReverseNot(List<Triad> inp) {
-        List<Element> revNot = new ArrayList<>();
+    public List<ParserToken> triads_toReverseNot(List<Triad> inp) {
+        List<ParserToken> revNot = new ArrayList<>();
         for (int i=0; i<inp.size(); i++) {
             Triad curTriad = inp.get(i);
             if (curTriad.getOp().getType().equals("CONST")) continue;
@@ -62,18 +62,18 @@ public class Conv {
         return revNot;
     }
 
-    private List<Triad> singleOp(List<Triad> t, List<Element> el, int i) {
-        t.add(new Triad(el.get(i), el.get(i-1), new Element()));
+    private List<Triad> singleOp(List<Triad> t, List<ParserToken> el, int i) {
+        t.add(new Triad(el.get(i), el.get(i-1), new ParserToken()));
         el.remove(i);
-        el.set(i-1, new Element("REF", t.size()-1 + ""));
+        el.set(i-1, new ParserToken("REF", t.size()-1 + ""));
         return t;
     }
 
-    private List<Triad> doubleOp(List<Triad> t, List<Element> el, int i) {
+    private List<Triad> doubleOp(List<Triad> t, List<ParserToken> el, int i) {
         t.add(new Triad(el.get(i), el.get(i - 2), el.get(i - 1)));
         el.remove(i);
         el.remove(i-1);
-        el.set(i-2, new Element("REF", t.size()-1 + ""));
+        el.set(i-2, new ParserToken("REF", t.size()-1 + ""));
         return t;
     }
 

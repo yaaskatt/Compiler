@@ -1,8 +1,8 @@
 package mirea.triad_optimisation;
 
 import mirea.lexer.Lexer;
-import mirea.lexer.Token;
-import mirea.parser.Element;
+import mirea.lexer.LexerToken;
+import mirea.parser.ParserToken;
 import mirea.parser.Parser;
 import org.junit.Test;
 
@@ -16,15 +16,15 @@ public class ConvTest {
     @Test
     public void convTest() {
         Lexer lexer = new Lexer(testFolder + "test4");
-        List<Token> tokenList = lexer.getAllTokens();
-        assertFalse(tokenList.isEmpty());
-        for (Token aTokenList : tokenList) {
-            System.out.printf("tokenType: %s, lexema: %s\n", aTokenList.getTokenType(), aTokenList.getValue());
+        List<LexerToken> lexerTokenList = lexer.getAllTokens();
+        assertFalse(lexerTokenList.isEmpty());
+        for (LexerToken lexerToken : lexerTokenList) {
+            System.out.printf("tokenType: %s, lexema: %s\n", lexerToken.getType(), lexerToken.getValue());
         }
-        Parser parser = new Parser(tokenList);
-        List<Element> elements = (parser.lang());
+        Parser parser = new Parser(lexerTokenList);
+        List<ParserToken> parserTokenList = parser.lang();
         Conv conv = new Conv();
-        List<Triad> triads = conv.reverseNot_toTriads(elements);
+        List<Triad> triads = conv.reverseNot_toTriads(parserTokenList);
 
         for (int i=0; i<triads.size(); i++) {
             Triad tr = triads.get(i);

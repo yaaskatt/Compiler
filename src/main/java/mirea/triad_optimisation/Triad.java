@@ -1,54 +1,54 @@
 package mirea.triad_optimisation;
-import mirea.parser.Element;
+import mirea.parser.ParserToken;
 
 public class Triad {
-    private Element op;
-    private Element el1;
-    private Element el2;
+    private ParserToken op;
+    private ParserToken el1;
+    private ParserToken el2;
 
     public Triad() {
     }
 
-    public Triad(Element op) {
+    public Triad(ParserToken op) {
         this.op = op;
     }
 
-    public Triad(Element op, Element el1) {
+    public Triad(ParserToken op, ParserToken el1) {
         this.op = op;
         this.el1 = el1;
     }
 
-    public Triad(Element op, Element el1, Element el2) {
+    public Triad(ParserToken op, ParserToken el1, ParserToken el2) {
         this.op = op;
         this.el1 = el1;
         this.el2 = el2;
     }
 
-    public Element getOp() {
+    public ParserToken getOp() {
         return this.op;
     }
 
-    public Element getEl1() {
+    public ParserToken getEl1() {
         return el1;
     }
 
-    public Element getEl2() {
+    public ParserToken getEl2() {
         return el2;
     }
 
-    public void setOp(Element op) {
+    public void setOp(ParserToken op) {
         this.op = op;
     }
 
-    public void setEl1(Element el1) {
+    public void setEl1(ParserToken el1) {
         this.el1 = el1;
     }
 
-    public void setEl2(Element el2) {
+    public void setEl2(ParserToken el2) {
         this.el2 = el2;
     }
 
-    public void setUnknownElement(Element el) {
+    public void setUnknownElement(ParserToken el) {
         if (el1 == null) el1 = el;
         else if (el2 == null) el2 = el;
     }

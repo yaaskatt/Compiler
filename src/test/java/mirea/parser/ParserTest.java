@@ -1,7 +1,7 @@
 package mirea.parser;
 
 import mirea.lexer.Lexer;
-import mirea.lexer.Token;
+import mirea.lexer.LexerToken;
 import org.junit.Test;
 
 import java.util.List;
@@ -18,14 +18,13 @@ public class ParserTest {
     @Test
     public void lang() {
         Lexer lexer = new Lexer(testFolder + "test4");
-        List<Token> tokenList = lexer.getAllTokens();
+        List<LexerToken> tokenList = lexer.getAllTokens();
         assertFalse(tokenList.isEmpty());
-        for (Token aTokenList : tokenList) {
-            System.out.printf("tokenType: %s, lexema: %s\n", aTokenList.getTokenType(), aTokenList.getValue());
+        for (LexerToken lexerToken : tokenList) {
+            System.out.printf("tokenType: %s, lexema: %s\n", lexerToken.getType(), lexerToken.getValue());
         }
         Parser parser = new Parser(tokenList);
-        List<Element> out = (parser.lang());
-        assertEquals(tokenList.size()-1, parser.num);
+        List<ParserToken> out = (parser.lang());
         for (int i=0; i<out.size(); i++) {
             System.out.printf("%d: type: %s, value: %s\n", i, out.get(i).getType(), out.get(i).getValue());
         }

@@ -17,11 +17,6 @@ public class Lexer {
     private String errorMessage = "";
     private Set<Character> blankChars = new HashSet<>();
 
-    /**
-     * Converts program on specified language to tokens
-     *
-     * @param filePath location of file with input code
-     */
     public Lexer(String filePath) {
         try (Stream<String> st = Files.lines(Paths.get(filePath))) {
             st.forEach(input::append);
@@ -112,10 +107,10 @@ public class Lexer {
         return exhausted;
     }
 
-    public List<Token> getAllTokens() {
-        List<Token> allTokens = new ArrayList<>();
+    public List<LexerToken> getAllTokens() {
+        List<LexerToken> allTokens = new ArrayList<>();
         while (!isExhausted()){
-            allTokens.add(new Token(currentType(), currentValue()));
+            allTokens.add(new LexerToken(currentType(), currentValue()));
             moveAhead();
         }
         if (!isSuccessful()) try {

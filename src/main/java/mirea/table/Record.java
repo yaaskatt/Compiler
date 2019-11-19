@@ -1,7 +1,5 @@
 package mirea.table;
 
-import mirea.parser.Element;
-
 public class Record {
     private String name;
     private Object value;

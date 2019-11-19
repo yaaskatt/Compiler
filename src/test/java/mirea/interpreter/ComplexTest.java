@@ -1,8 +1,8 @@
 package mirea.interpreter;
 
 import mirea.lexer.Lexer;
-import mirea.lexer.Token;
-import mirea.parser.Element;
+import mirea.lexer.LexerToken;
+import mirea.parser.ParserToken;
 import mirea.parser.Parser;
 import org.junit.Test;
 
@@ -17,11 +17,11 @@ public class ComplexTest {
     /*@Test
     public void compTest() throws Exception {
             Lexer lexer = new Lexer(testFolder + "compTest.txt");
-            List<Token> tokenList = lexer.getAllTokens();
+            List<LexerToken> tokenList = lexer.getAllTokens();
             assertFalse(tokenList.isEmpty());
 
             Parser parser = new Parser(tokenList);
-            List<Element> out = (parser.lang());
+            List<ParserToken> out = (parser.lang());
 
             Interpreter interpreter = new Interpreter();
             interpreter.count(out);
@@ -30,11 +30,11 @@ public class ComplexTest {
     @Test
     public void compTest1() throws Exception {
         Lexer lexer = new Lexer(testFolder + "langTest");
-        List<Token> tokenList = lexer.getAllTokens();
+        List<LexerToken> tokenList = lexer.getAllTokens();
         assertFalse(tokenList.isEmpty());
 
         Parser parser = new Parser(tokenList);
-        List<Element> out = (parser.lang());
+        List<ParserToken> out = (parser.lang());
 
         Interpreter interpreter = new Interpreter();
         interpreter.count(out);
@@ -43,10 +43,10 @@ public class ComplexTest {
     @Test
     public void compTest2() throws Exception {
         Lexer lexer = new Lexer(testFolder + "compTest.txt");
-        List<Token> tokenList = lexer.getAllTokens();
-        assertFalse(tokenList.isEmpty());
-        Parser parser = new Parser(tokenList);
-        List<Element> out = (parser.lang());
+        List<LexerToken> lexerTokenList = lexer.getAllTokens();
+        assertFalse(lexerTokenList.isEmpty());
+        Parser parser = new Parser(lexerTokenList);
+        List<ParserToken> out = (parser.lang());
         Interpreter interpreter = new Interpreter(testFolder + "ComplexTestResult.txt");
         interpreter.count(out);
     }
