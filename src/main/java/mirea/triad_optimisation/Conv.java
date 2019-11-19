@@ -49,6 +49,19 @@ public class Conv {
         return triads;
     }
 
+    public List<Element> triads_toReverseNot(List<Triad> inp) {
+        List<Element> revNot = new ArrayList<>();
+        for (int i=0; i<inp.size(); i++) {
+            Triad curTriad = inp.get(i);
+            if (curTriad.getOp().getType().equals("CONST")) continue;
+            if (curTriad.getEl2().notBlank())
+                revNot.add(curTriad.getEl2());
+            revNot.add(curTriad.getEl1());
+            revNot.add(curTriad.getOp());
+        }
+        return revNot;
+    }
+
     private List<Triad> singleOp(List<Triad> t, List<Element> el, int i) {
         t.add(new Triad(el.get(i), el.get(i-1), new Element()));
         el.remove(i);

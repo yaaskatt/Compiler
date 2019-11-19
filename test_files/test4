@@ -1,3 +1,7 @@
+int k;
+int l;
+k = 0;
+l = k;
 Set a;
 a.add 5;
 int b;

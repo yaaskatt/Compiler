@@ -4,16 +4,14 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.*;
 import java.util.logging.Logger;
 
 import mirea.structures.CustomList;
 import mirea.structures.CustomSet;
+import mirea.table.Record;
+import mirea.table.SymbolTable;
 
-/**
- * Class to process and evaluate Parser output.
- */
 class Interpreter {
 
     private LinkedList<ElementInterface> stack = new LinkedList<>();
@@ -45,12 +43,6 @@ class Interpreter {
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
     }
 
-    /**
-     * Method takes RPN List as argument and returns string result of calculations.
-     * @param elements RPN in List
-     * @return 0 if completed successfully
-     * @throws Exception if type problems found
-     */
     public int count(List<? extends ElementInterface> elements) throws Exception {
         for (int i = 0; i < elements.size(); i++) {
              ElementInterface element = elements.get(i);
@@ -164,17 +156,6 @@ class Interpreter {
         return b == 0;
     }
 
-    /**
-     * Compares two elementInterface values
-     *
-     * @param arg1 of basic types
-     * @param arg2 of basic types
-     * @return for ints returns difference between elements.
-     * For doubles returns 0 if equals, 1 if bigger and -1 if less.
-     * For Strings returns standard String.compareTo().
-     * @throws InterpreterException when wrong types
-     * @see String
-     */
     private int compareEl(ElementInterface arg1, ElementInterface arg2) throws InterpreterException {
         if (!arg1.getType().equals(arg2.getType()))
             logger.warning("Types mismatch(" + arg1.getType() + "+" + arg2.getType() +
@@ -196,14 +177,6 @@ class Interpreter {
         }
     }
 
-
-    /**
-     * Counts sum of arg1 and arg2. Result type is defined by arg1 type.
-     *
-     * @param arg2 addend 2
-     * @param arg1 addend 1
-     * @throws InterpreterException when arg1 type is not double or int
-     */
     private ElementInterface sum(ElementInterface arg2, ElementInterface arg1)
             throws InterpreterException{
         if (!arg1.getType().equals(arg2.getType()))
@@ -247,12 +220,6 @@ class Interpreter {
         }
     }
 
-    /**
-     * Counts difference of arg1 and arg2. Result type is defined by arg1 type.
-     * @param arg2 subtrahend
-     * @param arg1 minuend
-     * @throws InterpreterException when arg1 type is not double or int
-     */
     private ElementInterface dif(ElementInterface arg2, ElementInterface arg1)
             throws InterpreterException{
         if (!arg1.getType().equals(arg2.getType()))
@@ -272,12 +239,6 @@ class Interpreter {
         }
     }
 
-    /**
-     * Divides arg1 by arg2. Result type is defined by arg1 type.
-     * @param arg2 divider
-     * @param arg1 dividend
-     * @throws InterpreterException when arg1 type is not double or int
-     */
     private ElementInterface div(ElementInterface arg2, ElementInterface arg1)
             throws InterpreterException {
         if (!arg1.getType().equals(arg2.getType()))
@@ -297,13 +258,6 @@ class Interpreter {
         }
     }
 
-    /**
-     * Assigns specified value to destination variable
-     *
-     * @param element var or const to be assigned
-     * @param destination var where to put value
-     * @throws InterpreterException when variable does not exist or destination is not variable.
-     */
     private void assignVal(ElementInterface element, ElementInterface destination)
             throws InterpreterException {
         if (!destination.getType().equals(ADR_TYPE)){
@@ -323,13 +277,6 @@ class Interpreter {
         destRec.setValue(element.getValue());
     }
 
-    /**
-     * Adds element of type int to destination List
-     *
-     * @param element element to add, should be INT_TYPE
-     * @param destination destination List, type should match LIST_TYPE
-     * @throws InterpreterException when wrong types
-     */
     private void addEl(ElementInterface element, ElementInterface destination)
             throws InterpreterException {
         Record record = symbolTable.lookup(destination.getValue());
@@ -352,13 +299,6 @@ class Interpreter {
         logger.fine("Put to " + destination.getValue() + " " + element);
     }
 
-    /**
-     * Adds element of type int to destination List
-     *
-     * @param element element to add, should be INT_TYPE
-     * @param destination destination List, type should match LIST_TYPE
-     * @throws InterpreterException when wrong types
-     */
     private void containsEl(ElementInterface element, ElementInterface destination)
             throws InterpreterException {
         Record record = symbolTable.lookup(destination.getValue());
@@ -380,13 +320,6 @@ class Interpreter {
         }
     }
 
-    /**
-     * Gets element from Collection
-     *
-     * @param index position of element, should be INT_TYPE
-     * @param inp variable of LIST_TYPE or MAP_TYPE
-     * @throws InterpreterException when inp not collection
-     */
     private void getEl(ElementInterface index, ElementInterface inp) throws InterpreterException {
         Record record = symbolTable.lookup(inp.getValue());
         Integer val;
@@ -404,22 +337,6 @@ class Interpreter {
         if (val != null) stack.push(mkElement(INT_TYPE, val.toString()));
     }
 
-    /**
-     * Puts key-value pair to map INT-INT
-     *
-     * @param val should be INT_TYPE
-     * @param key should be INT_TYPE
-     * @param inp should be MAP_TYPE
-     * @throws InterpreterException when type other than map
-     */
-
-    /**
-     * Checks if condition is met.
-     *
-     * @param pop int element for check
-     * @return true if pop.value != 0 else false
-     * @throws InterpreterException when condition type is not int
-     */
     private boolean isTrue(ElementInterface pop) throws InterpreterException {
         if (!pop.getType().equals(INT_TYPE)){
             throw new InterpreterException("Condition type " + pop.getType() + "not supported");
@@ -435,14 +352,6 @@ class Interpreter {
         return Double.parseDouble(s);
     }
 
-    /**
-     * Inserts symbol to symbol table when definition found, value is set to null for normal types.
-     * For types list and map value contains new instance.
-     *
-     * @param name identifier
-     * @param type one of supported types
-     * @throws InterpreterException when variable is already defined in scope
-     */
     private void insertSym(String name, String type) throws InterpreterException {
         if (symbolTable.localLookup(name) != null) {
             throw new InterpreterException("Variable " + name + " is already defined in this scope.");
@@ -450,18 +359,11 @@ class Interpreter {
         Object value = null;
         logger.fine("Symbol table insert symbol " + name + " type " + type);
         if (type.equals(LIST_TYPE)) value = new CustomList<Integer>(); // int list
-        if (type.equals(SET_TYPE)) value = new CustomSet<Integer>(); // int list
+        else if (type.equals(SET_TYPE)) value = new CustomSet<Integer>(); // int list
         symbolTable.insertSymbol(new Record(name, value, type));
     }
 
-    /**
-     * Receives value for VAR_TYPE from a symbol table.
-     * This should not be called for Collection types.
-     *
-     * @param element variable to look for
-     * @return actual value of the variable or initial element
-     * @throws InterpreterException when variable is not defined in scope
-     */
+
     private ElementInterface getSymData(ElementInterface element) throws InterpreterException {
         Record rec = symbolTable.lookup(element.getValue());
         if (rec == null) {
@@ -473,13 +375,6 @@ class Interpreter {
         return mkElement(rec.getType(), rec.getValue().toString());
     }
 
-    /**
-     * Creates object of ElementInterface class with the specified fields
-     *
-     * @param type string value returned be getType()
-     * @param value string value returned by getValue()
-     * @return object with specified fields
-     */
     private ElementInterface mkElement(String type, String value){
          return new ElementInterface() {
              @Override
@@ -494,7 +389,6 @@ class Interpreter {
          };
     }
 
-    /* Makes string with stack values DEBUG-ONLY*/
     private String strVal(LinkedList<ElementInterface> stack) {
         StringBuilder stringBuilder = new StringBuilder("[ ");
         for (ElementInterface inp: stack) {

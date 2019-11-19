@@ -29,4 +29,9 @@ public class Element implements ElementInterface {
     public String getValue() {
         return value;
     }
+
+    public boolean notBlank() {
+        if (type.equals("") && value.equals("")) return false;
+    return true;
+    }
 }
