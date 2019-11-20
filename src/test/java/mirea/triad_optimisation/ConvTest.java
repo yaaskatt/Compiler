@@ -15,7 +15,7 @@ public class ConvTest {
 
     @Test
     public void convTest() {
-        Lexer lexer = new Lexer(testFolder + "test4");
+        Lexer lexer = new Lexer(testFolder + "ConvTest");
         List<LexerToken> lexerTokenList = lexer.getAllTokens();
         assertFalse(lexerTokenList.isEmpty());
         for (LexerToken lexerToken : lexerTokenList) {

@@ -77,79 +77,11 @@ public class Opt {
                 continue;
             }
 
-            if (curTriad.getT1().getType().equals(Name.VAR)) {
-                curTriad.setT1(replaceVarWithValue(curTriad.getT1()));
-            }
-            else if (curTriad.getT1().getType().equals(Name.REF)) {
-                curTriad.setT1(replaceRefWithValue(curTriad.getT1(), triads));
-            }
-
-            if (curTriad.getT2().getType().equals(Name.VAR)) {
-                curTriad.setT2(replaceVarWithValue(curTriad.getT2()));
-            }
-            else if (curTriad.getT2().getType().equals(Name.REF)) {
-                    curTriad.setT2(replaceRefWithValue(curTriad.getT2(), triads));
-            }
-
-            if (curTriad.getOp().getType().equals(Name.OP) && isConstant(curTriad)) {
-                String type = curTriad.getT1().getType().toUpperCase();
-                boolean flag = true;
-                switch (curTriad.getOp().getValue()) {
-                    case "+":
-                        curTriad.setT1(calculator.sum(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "-":
-                        curTriad.setT1(calculator.dif(curTriad.getT2(), curTriad.getT1()));;
-                        break;
-                    case "*":
-                        curTriad.setT1(calculator.mult(curTriad.getT1(), curTriad.getT2()));
-                        break;
-                    case "/":
-                        curTriad.setT1(calculator.div(curTriad.getT2(), curTriad.getT1()));
-                    case "<":
-                        curTriad.setT1(calculator.isLess(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case ">":
-                        curTriad.setT1(calculator.isBigger(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case ">=":
-                        curTriad.setT1(calculator.isBiggerOrEq(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "<=":
-                        curTriad.setT1(calculator.isLessOrEq(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "==":
-                        curTriad.setT1(calculator.isEq(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "!=":
-                        curTriad.setT1(calculator.isNotEq(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "&&":
-                        curTriad.setT1(calculator.conj(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "||":
-                        curTriad.setT1(calculator.disj(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "get":
-                        curTriad.setT1(calculator.get(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    case "contains":
-                        curTriad.setT1(calculator.contains(curTriad.getT2(), curTriad.getT1()));
-                        break;
-                    default:
-                        flag = false;
-
-                }
-                if (flag) {
-                    curTriad.setOp(new ParserToken("CONST", type));
-                    curTriad.setT2(new ParserToken());
-                }
-            continue;
-            }
 
             if (curTriad.getOp().getValue().equals("=")) {
                 rec = table.localLookup(curTriad.getT1().getValue());
                 if (rec != null) {
+                    replaceWithConstants(curTriad, triads);
                     switch (curTriad.getT2().getType().toUpperCase()) {
                         case Name.INT:
                         case Name.DOUBLE:
@@ -188,5 +120,80 @@ public class Opt {
             }
         }
         return triads;
+    }
+
+    private void replaceWithConstants(Triad curTriad, List<Triad> triads) throws Exception{
+        if (curTriad.getT1().getType().equals(Name.VAR)) {
+            curTriad.setT1(replaceVarWithValue(curTriad.getT1()));
+        }
+        else if (curTriad.getT1().getType().equals(Name.REF)) {
+            replaceWithConstants(triads.get(Integer.parseInt(curTriad.getT1().getValue())), triads);
+        }
+
+        if (curTriad.getT2().getType().equals(Name.VAR)) {
+            curTriad.setT2(replaceVarWithValue(curTriad.getT2()));
+        }
+        else if (curTriad.getT2().getType().equals(Name.REF)) {
+            replaceWithConstants(triads.get(Integer.parseInt(curTriad.getT2().getValue())), triads);
+        }
+
+        if (curTriad.getOp().getType().equals(Name.OP) && isConstant(curTriad)) {
+            calc(curTriad);
+        }
+    }
+
+    private void calc(Triad curTriad) throws Exception {
+        String type = curTriad.getT1().getType().toUpperCase();
+        boolean flag = true;
+        switch (curTriad.getOp().getValue()) {
+            case "+":
+                curTriad.setT1(calculator.sum(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "-":
+                curTriad.setT1(calculator.dif(curTriad.getT2(), curTriad.getT1()));;
+                break;
+            case "*":
+                curTriad.setT1(calculator.mult(curTriad.getT1(), curTriad.getT2()));
+                break;
+            case "/":
+                curTriad.setT1(calculator.div(curTriad.getT2(), curTriad.getT1()));
+            case "<":
+                curTriad.setT1(calculator.isLess(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case ">":
+                curTriad.setT1(calculator.isBigger(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case ">=":
+                curTriad.setT1(calculator.isBiggerOrEq(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "<=":
+                curTriad.setT1(calculator.isLessOrEq(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "==":
+                curTriad.setT1(calculator.isEq(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "!=":
+                curTriad.setT1(calculator.isNotEq(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "&&":
+                curTriad.setT1(calculator.conj(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "||":
+                curTriad.setT1(calculator.disj(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "get":
+                curTriad.setT1(calculator.get(curTriad.getT2(), curTriad.getT1()));
+                break;
+            case "contains":
+                curTriad.setT1(calculator.contains(curTriad.getT2(), curTriad.getT1()));
+                break;
+            default:
+                flag = false;
+
+        }
+        if (flag) {
+            curTriad.setOp(new ParserToken("CONST", type));
+            curTriad.setT2(new ParserToken());
+        }
     }
 }

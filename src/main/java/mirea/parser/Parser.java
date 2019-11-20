@@ -2,6 +2,7 @@ package mirea.parser;
 
 import mirea.token.AbstractToken;
 import mirea.lexer.LexerToken;
+import mirea.token.Name;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class Parser {
     private LexerToken curLexerToken;
     private int lastNumInPrefix = -1;
     private int num = -1;
+    private boolean inCycleCondition;
 
     public Parser(List<LexerToken> lexerTokenList) {
         this.lexerTokenList = lexerTokenList;
@@ -58,8 +60,10 @@ public class Parser {
         int condBeg;
         if (WHILE()) {
             condBeg = parserTokenList.size();
+            inCycleCondition = true;
             if (condition_stmt() && DO() && L_CB()) {
                 condEndRef = parserTokenList.size() - 3;
+                inCycleCondition = false;
                 while (expr()) {
                 }
                 if (R_CB()) {
@@ -436,7 +440,11 @@ public class Parser {
             case "INT":
             case "STRING":
             case "VAR":
-                parserTokenList.add(toParserToken(curLexerToken));
+                ParserToken parserToken = toParserToken(curLexerToken);
+                if (inCycleCondition && parserToken.getType().equals(Name.VAR)) {
+                    parserToken.setType(Name.ADR);
+                }
+                parserTokenList.add(parserToken);
                 break;
             case "SEMI":
                 while (!s.isEmpty()) {
