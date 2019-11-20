@@ -80,18 +80,52 @@ public class Conv {
 
     public List<ParserToken> triads_toReverseNot(List<Triad> inp) {
         List<ParserToken> revNot = new ArrayList<>();
+        HashMap<Integer, Integer> corr = new HashMap<>();
+        List<ParserToken> trRef = new ArrayList<>();
         for (int i=0; i<inp.size(); i++) {
             Triad curTriad = inp.get(i);
             if (curTriad.getOp().getType().equals("CONST")) continue;
-            if (curTriad.getT2().notBlank())
-                revNot.add(curTriad.getT2());
+
             if (curTriad.getT1().notBlank()) {
                 revNot.add(curTriad.getT1());
+                if (!corr.containsKey(i)) corr.put(i, revNot.size()-1);
+            }
+            if (curTriad.getT2().notBlank()) {
+                revNot.add(curTriad.getT2());
+                if (!corr.containsKey(i)) corr.put(i, revNot.size()-1);
             }
             revNot.add(curTriad.getOp());
+            if (!corr.containsKey(i)) corr.put(i, revNot.size()-1);
+            if (curTriad.getOp().getType().equals(Name.TRANS)) {
+                trRef.add(revNot.get(revNot.size() - 2));
+            }
         }
+        for (int i=0; i<revNot.size(); i++) {
+            ParserToken curToken = revNot.get(i);
+            if (curToken.getType().equals(Name.REF)) {
+                revNot.remove(i);
+                int k = corr.size() - 1;
+                while (corr.get(k) > i) {
+                    corr.put(k, corr.get(k) - 1);
+                    k--;
+                }
+                int index = Integer.parseInt(curToken.getValue());
+                for (int j=corr.get(index + 1) - 1 ; j >= corr.get(index); j--) {
+                    revNot.add(i, revNot.get(j));
+                    i--;
+                    revNot.remove(j);
+                }
+            }
+        }
+
+        for (ParserToken ref : trRef) {
+            ref.setValue(valueOf(corr.get(Integer.parseInt(ref.getValue()))));
+        }
+
         return revNot;
     }
+
+
 
     private List<Triad> singleOp(List<Triad> t, List<ParserToken> el, HashMap<Integer, Integer> corr, int i, int dif) {
         t.add(new Triad(el.get(i), el.get(i-1), new ParserToken()));

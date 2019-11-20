@@ -41,11 +41,11 @@ public class Triad {
     }
 
     public void setT1(ParserToken t1) {
-        this.t1 = t1;
+        this.t1 = new ParserToken(t1.getType(), t1.getValue());
     }
 
     public void setT2(ParserToken t2) {
-        this.t2 = t2;
+        this.t2 = new ParserToken(t2.getType(), t2.getValue());;
     }
 
     public void setUnknownElement(ParserToken el) {
