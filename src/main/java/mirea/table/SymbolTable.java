@@ -41,10 +41,6 @@ public class SymbolTable {
         return tables.get(position).get(name);
     }
 
-    public int position() {
-        return position;
-    }
-
     public ArrayList<HashMap<String, Record>> tables() {
         return tables;
     }

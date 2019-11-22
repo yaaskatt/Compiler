@@ -3,7 +3,7 @@ package mirea.lexer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum TokenType {
+public enum LexerTokenType {
 
     OP ("^(\\-|\\+|\\*|\\/)"),
     COMP_OP("(==|!=|<=|>=|<|>)"),
@@ -34,7 +34,7 @@ public enum TokenType {
 
     private final Pattern pattern;
 
-    TokenType(String regex) {
+    LexerTokenType(String regex) {
         pattern = Pattern.compile("^" + regex);
     }
 
@@ -45,5 +45,13 @@ public enum TokenType {
             return m.end();
         }
         return -1;
+    }
+
+    public LexerTokenType getTypeByValue(String value) {
+        for (LexerTokenType t : LexerTokenType.values()) {
+            int end = t.endOfMatch(value);
+            if (end != -1) return t;
+        }
+        return null;
     }
 }

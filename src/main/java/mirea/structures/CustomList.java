@@ -5,6 +5,10 @@ public class CustomList<E> {
     Node<E> first = null;
     Node<E> last = null;
 
+    public CustomList() {
+
+    }
+
     public int size() {
         return size;
     }

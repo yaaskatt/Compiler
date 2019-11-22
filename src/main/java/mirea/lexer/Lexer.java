@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class Lexer {
     private StringBuilder input = new StringBuilder();
-    private TokenType type;
+    private LexerTokenType type;
     private String value;
     private boolean exhausted = false;
     private String errorMessage = "";
@@ -73,7 +73,7 @@ public class Lexer {
     }
 
     private boolean findNextToken() {
-        for (TokenType t : TokenType.values()) {
+        for (LexerTokenType t : LexerTokenType.values()) {
             int end = t.endOfMatch(input.toString());
 
             if (end != -1) {
@@ -87,7 +87,7 @@ public class Lexer {
         return false;
     }
 
-    private TokenType currentType() {
+    private LexerTokenType currentType() {
         return type;
     }
 

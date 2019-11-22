@@ -1,8 +1,7 @@
 package mirea.parser;
 
-import mirea.token.AbstractToken;
 import mirea.lexer.LexerToken;
-import mirea.token.Name;
+import mirea.lexer.LexerTokenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,16 +59,17 @@ public class Parser {
         int condBeg;
         if (WHILE()) {
             condBeg = parserTokenList.size();
-            inCycleCondition = true;
+
             if (condition_stmt() && DO() && L_CB()) {
                 condEndRef = parserTokenList.size() - 3;
-                inCycleCondition = false;
+
                 while (expr()) {
                 }
                 if (R_CB()) {
-                    parserTokenList.add(new ParserToken("INT", condBeg + ""));
-                    parserTokenList.add(new ParserToken("TRANS", "!"));
-                    parserTokenList.set(condEndRef, new ParserToken("INT", parserTokenList.size() + ""));
+                    parserTokenList.add(new ParserToken(ParserTokenType.INT, condBeg + ""));
+                    parserTokenList.add(new ParserToken(ParserTokenType.TRANS, "!"));
+                    parserTokenList.set(condEndRef, new ParserToken(ParserTokenType.INT,
+                            parserTokenList.size() + ""));
                     return true;
                 }
             }
@@ -97,10 +97,12 @@ public class Parser {
             else num = cycleNum;
             if (R_CB()) {
                 if (elseBeg != -1) {
-                    parserTokenList.set(ifEndRef, new ParserToken("INT", elseBeg + ""));
-                    parserTokenList.set(thenEndRef, new ParserToken("INT", parserTokenList.size() + ""));
+                    parserTokenList.set(ifEndRef, new ParserToken(ParserTokenType.INT, elseBeg + ""));
+                    parserTokenList.set(thenEndRef,
+                            new ParserToken(ParserTokenType.INT, parserTokenList.size() + ""));
                 } else {
-                    parserTokenList.set(ifEndRef, new ParserToken("INT", parserTokenList.size() + ""));
+                    parserTokenList.set(ifEndRef,
+                            new ParserToken(ParserTokenType.INT, parserTokenList.size() + ""));
                 }
                 return true;
             }
@@ -249,108 +251,110 @@ public class Parser {
     }
 
     private boolean VAR() {
-        return checkToken("VAR");
+        return checkToken(LexerTokenType.VAR);
     }
 
     private boolean ASSIGN_OP() {
-        return checkToken("ASSIGN_OP");
+        return checkToken(LexerTokenType.ASSIGN_OP);
     }
 
     private boolean DOUBLE() {
-        return checkToken("DOUBLE");
+        return checkToken(LexerTokenType.DOUBLE);
     }
 
     private boolean INT() {
-        return checkToken("INT");
+        return checkToken(LexerTokenType.INT);
     }
 
     private boolean STRING() {
-        return checkToken("STRING");
+        return checkToken(LexerTokenType.STRING);
     }
 
     private boolean OP() {
-        return checkToken("OP");
+        return checkToken(LexerTokenType.OP);
     }
 
     private boolean COMP_OP() {
-        return checkToken("COMP_OP");
+        return checkToken(LexerTokenType.COMP_OP);
     }
 
     private boolean LOG_OP() {
-        return checkToken("LOG_OP");
+        return checkToken(LexerTokenType.LOG_OP);
     }
 
     private boolean WHILE() {
-        return checkToken(("WHILE"));
+        return checkToken((LexerTokenType.WHILE));
     }
 
     private boolean DO() {
-        return checkToken("DO");
+        return checkToken(LexerTokenType.DO);
     }
 
     private boolean IF() {
-        return checkToken("IF");
+        return checkToken(LexerTokenType.IF);
     }
 
     private boolean THEN() {
-        return checkToken("THEN");
+        return checkToken(LexerTokenType.THEN);
     }
 
     private boolean ELSE() {
-        return checkToken("ELSE");
+        return checkToken(LexerTokenType.ELSE);
     }
 
     private boolean PRINT() {
-        return checkToken("PRINT");
+        return checkToken(LexerTokenType.PRINT);
     }
 
     private boolean TYPE() {
-        return checkToken("TYPE");
+        return checkToken(LexerTokenType.TYPE);
     }
 
     private boolean PUT() {
-        return checkToken("PUT");
+        return checkToken(LexerTokenType.PUT);
     }
 
     private boolean ADD() {
-        return checkToken("ADD");
+        return checkToken(LexerTokenType.ADD);
     }
 
-    private boolean CONTAINS() { return checkToken("CONTAINS"); }
+    private boolean CONTAINS() {
+        return checkToken(LexerTokenType.CONTAINS);
+    }
 
     private boolean GET() {
-        return checkToken("GET");
+        return checkToken(LexerTokenType.GET);
     }
 
     private boolean DOT() {
-        return checkToken("DOT");
+        return checkToken(LexerTokenType.DOT);
     }
 
     private boolean COMMA() {
-        return checkToken("COMMA");
+        return checkToken(LexerTokenType.COMMA);
     }
 
     private boolean SEMI() {
-        return checkToken("SEMI");
+        return checkToken(LexerTokenType.SEMI);
     }
 
     private boolean L_CB() {
-        return checkToken("L_CB");
+        return checkToken(LexerTokenType.L_CB);
     }
 
     private boolean R_CB() {
-        return checkToken("R_CB");
+        return checkToken(LexerTokenType.R_CB);
     }
 
     private boolean L_RB() {
-        return checkToken("L_RB");
+        return checkToken(LexerTokenType.L_RB);
     }
 
     private boolean R_RB() {
-        return checkToken("R_RB");
+        return checkToken(LexerTokenType.R_RB);
     }
 
-    private boolean checkToken(String reqTokenType) {
+    private boolean checkToken(LexerTokenType reqTokenType) {
         if (num == lexerTokenList.size() - 1) return false;
         int begNum = num;
         match();
@@ -371,20 +375,24 @@ public class Parser {
 
     private ParserToken toParserToken(LexerToken lexerToken) {
         switch (lexerToken.getType()) {
-            case "ASSIGN_OP":
-            case "ADD":
-            case "GET":
-            case "PUT":
-            case "CONTAINS":
-            case "LOG_OP":
-            case "COMP_OP":
-            case "PRINT":
-                return new ParserToken("OP", lexerToken.getValue());
-            case "TYPE":
-                return new ParserToken("DEF", lexerToken.getValue());
-            case "STRING":
-                return new ParserToken("STRING", lexerToken.getValue()
+            case ASSIGN_OP:
+            case ADD:
+            case GET:
+            case PUT:
+            case CONTAINS:
+            case LOG_OP:
+            case COMP_OP:
+            case PRINT:
+                return new ParserToken(ParserTokenType.OP, lexerToken.getValue());
+            case TYPE:
+                return new ParserToken(ParserTokenType.DEF, lexerToken.getValue());
+            case STRING:
+                return new ParserToken(ParserTokenType.STRING, lexerToken.getValue()
                         .substring(1, lexerToken.getValue().length()-1));
+            case L_CB:
+                return new ParserToken(ParserTokenType.ENTER_SCOPE, lexerToken.getValue());
+            case R_CB:
+                return new ParserToken(ParserTokenType.EXIT_SCOPE, lexerToken.getValue());
             default:
                 return new ParserToken(lexerToken);
         }
@@ -392,25 +400,25 @@ public class Parser {
 
     private void toReverseNot(LexerToken lexerToken) {
         switch (lexerToken.getType()) {
-            case "R_RB":
-                while (!s.peek().getType().equals("L_RB")) {
+            case R_RB:
+                while (s.peek().getType() != LexerTokenType.L_RB) {
                     parserTokenList.add(toParserToken(s.pop()));
                 }
                 s.pop();
                 break;
-            case "L_CB":
+            case L_CB:
                 parserTokenList.add(toParserToken(curLexerToken));
                 break;
-            case "L_RB":
+            case L_RB:
                 s.add(curLexerToken);
                 break;
-            case "OP":
+            case OP:
                 String prevTokenLex = lexerTokenList.get(num - 1).getValue();
                 if ((prevTokenLex.equals("(") || prevTokenLex.equals("=")) && lexerToken.getValue().equals("-")) {
-                    parserTokenList.add(new ParserToken("INT", "0"));
+                    parserTokenList.add(new ParserToken(ParserTokenType.INT, "0"));
                 }
-            case "COMP_OP":
-            case "LOG_OP":
+            case COMP_OP:
+            case LOG_OP:
                 if (!s.isEmpty()) {
                     while (!s.isEmpty() && priority(lexerTokenList.get(num)) <= priority(s.peek())) {
                         parserTokenList.add(toParserToken(s.pop()));
@@ -418,8 +426,9 @@ public class Parser {
                 }
                 s.add(curLexerToken);
                 break;
-            case "ASSIGN_OP":
-                parserTokenList.set(parserTokenList.size() - 1, new ParserToken("ADR", parserTokenList.get(parserTokenList.size() - 1).getValue()));
+            case ASSIGN_OP:
+                parserTokenList.set(parserTokenList.size() - 1, new ParserToken(ParserTokenType.ADR,
+                        parserTokenList.get(parserTokenList.size() - 1).getValue()));
                 if (!s.isEmpty()) {
                     while (!s.isEmpty() && priority(lexerTokenList.get(num)) <= priority(s.peek())) {
                         parserTokenList.add(toParserToken(s.pop()));
@@ -427,61 +436,63 @@ public class Parser {
                 }
                 s.add(curLexerToken);
                 break;
-            case "GET":
-            case "ADD":
-            case "PUT":
-            case "CONTAINS":
-                parserTokenList.set(parserTokenList.size() - 1, new ParserToken("ADR", parserTokenList.get(parserTokenList.size() - 1).getValue()));
-            case "TYPE":
-            case "PRINT":
+            case GET:
+            case ADD:
+            case PUT:
+            case CONTAINS:
+                parserTokenList.set(parserTokenList.size() - 1, new ParserToken(ParserTokenType.ADR,
+                        parserTokenList.get(parserTokenList.size() - 1).getValue()));
+            case TYPE:
+            case PRINT:
                 s.add(curLexerToken);
                 break;
-            case "DOUBLE":
-            case "INT":
-            case "STRING":
-            case "VAR":
+            case DOUBLE:
+            case INT:
+            case STRING:
+            case VAR:
                 ParserToken parserToken = toParserToken(curLexerToken);
-                if (inCycleCondition && parserToken.getType().equals(Name.VAR)) {
-                    parserToken.setType(Name.ADR);
+                if (inCycleCondition && parserToken.getType() == ParserTokenType.VAR) {
+                    parserToken.setType(ParserTokenType.ADR);
                 }
                 parserTokenList.add(parserToken);
                 break;
-            case "SEMI":
+            case SEMI:
                 while (!s.isEmpty()) {
-                    if (s.peek().getType().equals("TYPE") )
-                        parserTokenList.set(parserTokenList.size() -1, new ParserToken("ADR", parserTokenList.get(parserTokenList.size()-1).getValue()));
+                    if (s.peek().getType() == LexerTokenType.TYPE )
+                        parserTokenList.set(parserTokenList.size() -1, new ParserToken(ParserTokenType.ADR,
+                                        parserTokenList.get(parserTokenList.size()-1).getValue()));
                     parserTokenList.add(toParserToken(s.pop()));
                 }
                 break;
-            case "COMMA":
-                while (!s.peek().getType().equals("PUT")) {
+            case COMMA:
+                while (s.peek().getType() != LexerTokenType.PUT) {
                     parserTokenList.add(toParserToken(s.pop()));
                 }
                 break;
-            case "THEN":
-            case "DO":
+            case THEN:
+            case DO:
                 while (!s.isEmpty()) {
                     parserTokenList.add(toParserToken(s.pop()));
                 }
                 parserTokenList.add(new ParserToken());
-                parserTokenList.add(new ParserToken("TRANS", "!F"));
+                parserTokenList.add(new ParserToken(ParserTokenType.TRANS, "!F"));
                 break;
-            case "ELSE":
+            case ELSE:
                 parserTokenList.add(new ParserToken());
-                parserTokenList.add(new ParserToken("TRANS", "!"));
+                parserTokenList.add(new ParserToken(ParserTokenType.TRANS, "!"));
                 break;
-            case "R_CB":
-                parserTokenList.add(new ParserToken(curLexerToken));
+            case R_CB:
+                parserTokenList.add(toParserToken(curLexerToken));
                 break;
         }
     }
 
-    private static int priority(AbstractToken lexerToken) {
+    private static int priority(LexerToken lexerToken) {
         if (lexerToken.getValue().equals("="))
             return 1;
         if (lexerToken.getValue().equals("||")) return 2;
         if (lexerToken.getValue().equals("&&")) return 3;
-        if (lexerToken.getType().equals("COMP_OP"))
+        if (lexerToken.getType() == LexerTokenType.COMP_OP)
             return 4;
         if (lexerToken.getValue().equals("-") || lexerToken.getValue().equals("+"))
             return 5;

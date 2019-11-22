@@ -8,11 +8,11 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import mirea.parser.ParserToken;
+import mirea.parser.ParserTokenType;
 import mirea.structures.CustomList;
 import mirea.structures.CustomSet;
 import mirea.table.Record;
 import mirea.table.SymbolTable;
-import mirea.token.Name;
 
 class Interpreter {
 
@@ -37,16 +37,16 @@ class Interpreter {
         for (int i = 0; i < parserTokenList.size(); i++) {
             ParserToken token = parserTokenList.get(i);
              switch (token.getType()) {
-                 case Name.OP:      processOp(token.getValue()); break;
-                 case Name.ENTER_SCOPE:     symbolTable.enterScope(); break;
-                 case Name.EXIT_SCOPE:      symbolTable.exitScope(); break;
-                 case Name.INT:
-                 case Name.DOUBLE:
-                 case Name.STRING:
-                 case Name.ADR:     s.push(token); break;
-                 case Name.VAR:     s.push(getSymData(token)); break;
-                 case Name.DEF:     insertSym(s.pop().getValue(), token.getValue()); break;
-                 case Name.TRANS:
+                 case OP:           processOp(token.getValue()); break;
+                 case ENTER_SCOPE:  symbolTable.enterScope(); break;
+                 case EXIT_SCOPE:   symbolTable.exitScope(); break;
+                 case INT:
+                 case DOUBLE:
+                 case STRING:
+                 case ADR:     s.push(token); break;
+                 case VAR:     s.push(getSymData(token)); break;
+                 case DEF:     insertSym(s.pop().getValue(), token.getValue()); break;
+                 case TRANS:
                      /* Безусловный переход */
                      if (token.getValue().equals("!")) i = Integer.parseInt(s.pop().getValue()) - 1;
                      /* Переход по лжи */
@@ -80,62 +80,41 @@ class Interpreter {
 
             case "=":       assignVal(s.pop(), s.pop()); break;
 
-            case "add":     addEl(s.pop(), s.pop()); break;
-            case "get":     s.push(calculator.get(s.pop(), s.pop())); break;
-            case "contains":
-                s.push(calculator.contains(s.pop(), s.pop())); break;
+            case "add":         calculator.add(s.pop(), s.pop()); break;
+            case "get":         s.push(calculator.get(s.pop(), s.pop())); break;
+            case "contains":    s.push(calculator.contains(s.pop(), s.pop())); break;
+            
             case "print":   System.out.println("" + s.pop().getValue()); break;
-            case "println": System.out.println("" + s.pop().getValue()); break;
+
             default:        logger.severe("Operator " + value + " not supported");
         }
     }
 
-    private void assignVal(ParserToken token, ParserToken destination)
+    private void assignVal(ParserToken match, ParserToken var)
             throws Exception {
-        if (!destination.getType().equals(Name.ADR)){
-            throw new Exception("Assigning destination  \"" + destination.getValue() +
+        if (var.getType() != ParserTokenType.ADR){
+            throw new Exception("Assigning var  \"" + var.getValue() +
                     "\" must be address.");
         }
-        Record destRec = symbolTable.lookup(destination.getValue());
+        Record destRec = symbolTable.lookup(var.getValue());
         if (destRec == null) {
-            throw new Exception("Variable " + destination.getValue()
+            throw new Exception("Variable " + var.getValue()
                     + " is not defined in this scope.");
         }
-        if (!destRec.getType().toUpperCase().equals(token.getType())){
-            logger.severe("Type mismatch [" + destRec.getType() + ", " + token.getType() + "]");
-            throw new Exception("Assigning type " + token.getType() + " to "
+        if (destRec.getType() != match.getType()){
+            logger.severe("Type mismatch [" + destRec.getType() + ", " + match.getType() + "]");
+            throw new Exception("Assigning type " + match.getType() + " to "
                     + destRec.getType());
         }
-        destRec.setValue(token.getValue());
+        destRec.setValue(match.getValue());
     }
 
-    private void addEl(ParserToken token, ParserToken destination)
-            throws Exception {
-        Record record = symbolTable.lookup(destination.getValue());
-
-        if (!token.getType().equals(Name.INT)) {
-            throw new Exception("Type mismatch: " + token.getType() + ", required: INT");
-        }
-
-        switch (record.getType()) {
-            case Name.LIST:
-                @SuppressWarnings("unchecked") CustomList<Integer> list = (CustomList<Integer>) record.getValue();
-                list.add(Integer.parseInt(token.getValue()));
-                break;
-            case Name.SET:
-                @SuppressWarnings("unchecked") CustomSet<Integer> set = (CustomSet<Integer>) record.getValue();
-                set.add(Integer.parseInt(token.getValue()));
-                break;
-            default: throw new Exception("Trying yo put to type " + record.getType());
-        }
-        logger.fine("Put to " + destination.getValue() + " " + token);
-    }
 
     private boolean isTrue(ParserToken pop) throws Exception {
-        if (!pop.getType().equals(Name.INT)){
+        if (pop.getType() != ParserTokenType.INT){
             throw new Exception("Condition type " + pop.getType() + "not supported");
         }
-        return Integer.parseInt(pop.getValue()) == 1;
+        return Integer.parseInt(pop.getValue()) == 0;
     }
 
 
@@ -145,13 +124,14 @@ class Interpreter {
         }
         Object value = null;
         logger.fine("Symbol table insert symbol " + name + " type " + type);
-        if (type.equals(Name.LIST)) value = new CustomList<Integer>(); // int list
-        else if (type.equals(Name.SET)) value = new CustomSet<Integer>(); // int list
-        symbolTable.insertSymbol(new Record(name, value, type));
+        if (ParserTokenType.valueOf(type.toUpperCase()) == ParserTokenType.LIST) value = new CustomList<Integer>(); // int list
+        else if (ParserTokenType.valueOf(type.toUpperCase()) == ParserTokenType.SET) value = new CustomSet<Integer>(); // int list
+        symbolTable.insertSymbol(new Record(name, value, ParserTokenType.valueOf(type.toUpperCase())));
     }
 
 
     private ParserToken getSymData(ParserToken token) throws Exception {
+
         Record rec = symbolTable.lookup(token.getValue());
         if (rec == null) {
             throw new Exception("Variable " + token.getValue() +
@@ -160,14 +140,5 @@ class Interpreter {
         logger.fine("Got value for " + token.getType() + " " + token.getValue() +
                 ": " + rec.getType() + " " + rec.getValue());
         return new ParserToken(rec.getType(), rec.getValue().toString());
-    }
-
-
-    private String strVal(LinkedList<ParserToken> stack) {
-        StringBuilder stringBuilder = new StringBuilder("[ ");
-        for (ParserToken inp: stack) {
-            stringBuilder.append(inp.getValue()).append(" ");
-        }
-        return stringBuilder.append("]").toString();
     }
 }

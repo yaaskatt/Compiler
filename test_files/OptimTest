@@ -1,4 +1,5 @@
-int a;
-int b;
-a = 2*3;
-b = a - 2;
+List l;
+List m;
+l.add(8);
+l.add(2 + l.get(0));
+
