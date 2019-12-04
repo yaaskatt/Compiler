@@ -1,5 +1,15 @@
-List l;
-List m;
-l.add(8);
-l.add(2 + l.get(0));
+List k;
+int a;
+a = 1;
+while (a < 5) do {
+    print "cycle";
+    a = a + 2;
+}
+int b;
+b = 8;
+k.add(b);
+k.add(2 + k.get(0));
+k.add(a);
+k.add(k.get(2) + k.get(1));
+print(k.get(3));
 

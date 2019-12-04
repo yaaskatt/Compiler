@@ -112,7 +112,7 @@ public class Converter {
         for (int i=0; i<tokenList.size(); i++) {
             if (tokenList.get(i).getType() == ParserTokenType.TRANS) {
                 int index = Integer.parseInt(tokenList.get(i-1).getValue());
-                tokenList.get(i).setValue(triadList.get(index).getT1().getValue());
+                tokenList.get(i-1).setValue(triadList.get(index).getT1().getValue());
             }
         }
 

@@ -113,7 +113,7 @@ public class Parser {
 
     private boolean objectOp_stmt() {
         int begNum = num;
-        if ((objectAdd() || objectPut()) && SEMI()) {
+        if (objectAdd() && SEMI()) {
             return true;
         }
         num = begNum;
@@ -224,7 +224,7 @@ public class Parser {
 
     private boolean objectMethodWithReturnValue() {
         int begNum = num;
-        if (VAR() && DOT() && (GET() || CONTAINS() || ADD() || PUT()) && value_stmt()) {
+        if (VAR() && DOT() && (GET() || CONTAINS() || ADD()) && value_stmt()) {
             return true;
         }
         num = begNum;
@@ -240,15 +240,6 @@ public class Parser {
         return false;
     }
 
-
-    private boolean objectPut() {
-        int begNum = num;
-        if (VAR() && DOT() && PUT() && value_stmt() && COMMA() && value_stmt()) {
-            return true;
-        }
-        num = begNum;
-        return false;
-    }
 
     private boolean VAR() {
         return checkToken(LexerTokenType.VAR);
@@ -420,7 +411,7 @@ public class Parser {
             case COMP_OP:
             case LOG_OP:
                 if (!s.isEmpty()) {
-                    while (!s.isEmpty() && priority(lexerTokenList.get(num)) <= priority(s.peek())) {
+                    while (!s.isEmpty() && priority(lexerToken) <= priority(s.peek())) {
                         parserTokenList.add(toParserToken(s.pop()));
                     }
                 }
@@ -498,6 +489,12 @@ public class Parser {
             return 5;
         if (lexerToken.getValue().equals("*") || lexerToken.getValue().equals("/"))
             return 6;
+        if (lexerToken.getType() == LexerTokenType.GET || lexerToken.getType() == LexerTokenType.CONTAINS) {
+            return 7;
+        }
+        if (lexerToken.getType() == LexerTokenType.ADD) {
+            return 8;
+        }
         return 0;
     }
 }

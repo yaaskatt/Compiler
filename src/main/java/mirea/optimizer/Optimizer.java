@@ -26,6 +26,7 @@ public class Optimizer {
         Record rec = constantsTable.localLookup(el.getValue());
         if (rec != null) {
             return new ParserToken(rec.getType(), rec.getValue() + "");
+
         }
         return el;
     }
@@ -56,15 +57,16 @@ public class Optimizer {
         List <Triad> origTempList = new ArrayList<>();
         boolean condition = false;
         for (int i=0; i<triadList.size(); i++) {
-            Record rec;
 
+            Record rec;
             Triad curTriad = triadList.get(i);
+            System.err.print("CURRENT TRIAD\t" + triadStr(curTriad) + "\n");
             switch(curTriad.getOp().getType()) {
                 case ENTER_SCOPE:
                     constantsTable.enterScope();
                     continue;
                 case EXIT_SCOPE:
-                    constantsTable.enterScope();
+                    constantsTable.exitScope();
                     continue;
                 case DEF:
                     Object value = null;
@@ -86,6 +88,7 @@ public class Optimizer {
                     List<Triad> toReplace = triadList.subList(i - origTempList.size(), i);
                     triadList.removeAll(toReplace);
                     triadList.addAll(i - origTempList.size(), origTempList);
+                    logger.info(origTempList.size() + " VALUE(S) RESTORED" + "\n");
                     origTempList.clear();
                     continue;
             }
@@ -93,17 +96,55 @@ public class Optimizer {
             origTempList.add(new Triad(curTriad));
 
             if (curTriad.getT1().getType() == ParserTokenType.VAR) {
-                curTriad.setT1(replaceVarWithValue(curTriad.getT1()));
+                ParserToken replToken = replaceVarWithValue(curTriad.getT1());
+                if (replToken != curTriad.getT1()) {
+                    curTriad.setT1(replaceVarWithValue(curTriad.getT1()));
+                    logger.info("ARG1 REPLACED WITH VALUE\t" + triadStr(curTriad) + "\n");
+                }
             }
             else if (curTriad.getT1().getType().equals(ParserTokenType.REF)) {
-                curTriad.setT1(replaceRefWithValue(curTriad.getT1(), triadList));
+                ParserToken replToken = replaceRefWithValue(curTriad.getT1(), triadList);
+                if (replToken != curTriad.getT1()) {
+                    curTriad.setT1(replaceRefWithValue(curTriad.getT1(), triadList));
+                    logger.info("ARG1 REPLACED WITH VALUE\t" + triadStr(curTriad) + "\n");
+                }
             }
 
-            if (curTriad.getT2().getType().equals(ParserTokenType.VAR)) {
-                curTriad.setT2(replaceVarWithValue(curTriad.getT2()));
+            if (curTriad.getT2().getType() == ParserTokenType.VAR) {
+                ParserToken replToken = replaceVarWithValue(curTriad.getT2());
+                if (replToken != curTriad.getT2()) {
+                    curTriad.setT2(replaceVarWithValue(curTriad.getT2()));
+                    logger.info("ARG2 REPLACED WITH VALUE\t" + triadStr(curTriad) + "\n");
+                }
             }
             else if (curTriad.getT2().getType().equals(ParserTokenType.REF)) {
+                ParserToken replToken = replaceRefWithValue(curTriad.getT2(), triadList);
+                if (replToken != curTriad.getT2()) {
                     curTriad.setT2(replaceRefWithValue(curTriad.getT2(), triadList));
+                    logger.info("ARG2 REPLACED WITH VALUE\t" + triadStr(curTriad) + "\n");
+                }
+            }
+
+            if (curTriad.getOp().getValue().equals("=")) {
+                origTempList.clear();
+                rec = constantsTable.localLookup(curTriad.getT1().getValue());
+                switch (curTriad.getT2().getType()) {
+                    case INT:
+                    case DOUBLE:
+                    case STRING:
+                    case CONST:
+                        rec.setValue(curTriad.getT2().getValue());
+                        break;
+                    default:
+                        constantsTable.deleteSymbol(curTriad.getT1().getValue());
+                }
+
+                continue;
+            }
+
+            if (curTriad.getOp().getValue().equals("print")) {
+                origTempList.clear();
+                continue;
             }
 
             if (curTriad.getOp().getType() == ParserTokenType.OP) {
@@ -151,13 +192,12 @@ public class Optimizer {
                         case "contains":
                             curTriad.setT1(calculator.contains(curTriad.getT2(), curTriad.getT1()));
                             break;
-                        default:
-                            flag = false;
-
                     }
 
                 }
-                else if (isConstant(curTriad.getT2().getType())){
+                else if (curTriad.getT1().getType() == ParserTokenType.ADR &&
+                        constantsTable.localLookup(curTriad.getT1().getValue()) != null &&
+                        isConstant(curTriad.getT2().getType())){
                     switch (curTriad.getOp().getValue()) {
                         case "get":
                             curTriad.setT1(calculator.get(curTriad.getT2(), curTriad.getT1()));
@@ -166,62 +206,32 @@ public class Optimizer {
                             curTriad.setT1(calculator.contains(curTriad.getT2(), curTriad.getT1()));
                             break;
                         case "add":
+                            if (constantsTable.localLookup(curTriad.getT1().getValue()) != null)
                             calculator.add(curTriad.getT2(), curTriad.getT1());
+                            else constantsTable.deleteSymbol(curTriad.getT1().getValue());
                             flag = false;
                             break;
-                        default:
-                            flag = false;
                     }
 
+                }
+                else {
+                    if (curTriad.getOp().getValue().equals("add"))
+                        constantsTable.deleteSymbol(curTriad.getT1().getValue());
+                    flag = false;
                 }
                 if (flag) {
                     curTriad.setOp(new ParserToken(ParserTokenType.CONST, "const"));
                     curTriad.setT2(new ParserToken());
-                }
-            continue;
-            }
-
-            if (curTriad.getOp().getValue().equals("=")) {
-                origTempList.clear();
-                rec = constantsTable.localLookup(curTriad.getT1().getValue());
-                if (rec != null) {
-                    switch (curTriad.getT2().getType()) {
-                        case INT:
-                        case DOUBLE:
-                        case STRING:
-                        case CONST:
-                            rec.setValue(curTriad.getT2().getValue());
-                            break;
-                        default:
-                            constantsTable.deleteSymbol(rec);
-                    }
-                }
-                continue;
-            }
-            if (curTriad.getOp().getValue().equals("add")) {
-                rec = constantsTable.localLookup(curTriad.getT1().getValue());
-                if (rec != null) {
-                    switch (curTriad.getT2().getType()) {
-                        case INT:
-                        case DOUBLE:
-                        case STRING:
-                        case CONST:
-                            switch(curTriad.getT1().getType()) {
-                                case LIST:
-                                    CustomList<Integer> list = (CustomList<Integer>) rec.getValue();
-                                    list.add(Integer.parseInt(curTriad.getT2().getValue()));
-                                    break;
-                                case SET:
-                                    CustomSet<Integer> set = (CustomSet<Integer>) rec.getValue();
-                                    set.add(Integer.parseInt(curTriad.getT2().getValue()));
-                                    break;
-                            }
-                        default:
-                            constantsTable.deleteSymbol(rec);
-                    }
+                    logger.info("OPERATION PROCESSED\t" + triadStr(curTriad) + "\n");
                 }
             }
         }
         return triadList;
+    }
+
+    public String triadStr(Triad triad) {
+        return triad.getOp().getType() + " " + triad.getOp().getValue() + " (" +
+                triad.getT1().getType() + " " + triad.getT1().getValue() + ", " +
+                triad.getT2().getType() + " " + triad.getT2().getValue() + ")";
     }
 }

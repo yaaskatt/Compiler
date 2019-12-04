@@ -29,6 +29,14 @@ public class SymbolTable {
         tables.get(position).remove(record.getName());
     }
 
+    public void deleteSymbol(String name) {
+        Record result;
+        for (int i = position; i >= 0; i--){
+            if ((result = tables.get(i).get(name)) != null)
+                tables.get(i).remove(result.getName());
+        }
+    }
+
     public Record lookup(String name){
         Record result;
         for (int i = position; i >= 0; i--){
