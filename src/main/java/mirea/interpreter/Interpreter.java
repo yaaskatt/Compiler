@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import mirea.parser.ParserToken;
 import mirea.parser.ParserTokenType;
+import static mirea.parser.ParserTokenType.*;
+
 import mirea.structures.CustomList;
 import mirea.structures.CustomSet;
 import mirea.table.Record;
@@ -92,7 +94,7 @@ class Interpreter {
 
     private void assignVal(ParserToken match, ParserToken var)
             throws Exception {
-        if (var.getType() != ParserTokenType.ADR){
+        if (var.getType() != ADR){
             throw new Exception("Assigning var  \"" + var.getValue() +
                     "\" must be address.");
         }
@@ -111,7 +113,7 @@ class Interpreter {
 
 
     private boolean isTrue(ParserToken pop) throws Exception {
-        if (pop.getType() != ParserTokenType.INT){
+        if (pop.getType() != INT){
             throw new Exception("Condition type " + pop.getType() + "not supported");
         }
         return Integer.parseInt(pop.getValue()) == 0;
@@ -124,8 +126,8 @@ class Interpreter {
         }
         Object value = null;
         logger.fine("Symbol table insert symbol " + name + " type " + type);
-        if (ParserTokenType.valueOf(type.toUpperCase()) == ParserTokenType.LIST) value = new CustomList<Integer>(); // int list
-        else if (ParserTokenType.valueOf(type.toUpperCase()) == ParserTokenType.SET) value = new CustomSet<Integer>(); // int list
+        if (ParserTokenType.valueOf(type.toUpperCase()) == LIST) value = new CustomList<Integer>(); // int list
+        else if (ParserTokenType.valueOf(type.toUpperCase()) == SET) value = new CustomSet<Integer>(); // int list
         symbolTable.insertSymbol(new Record(name, value, ParserTokenType.valueOf(type.toUpperCase())));
     }
 

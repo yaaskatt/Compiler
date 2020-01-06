@@ -1,8 +1,0 @@
-List a;
-List b;
-a.add(5);
-a.add(6);
-b.add(a.get(1));
-print(a.get(0));
-print(a.get(1));
-print(b.get(0));

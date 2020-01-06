@@ -1,7 +1,7 @@
 package mirea.optimizer;
 
 import mirea.parser.ParserToken;
-import mirea.parser.ParserTokenType;
+import static mirea.parser.ParserTokenType.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class Converter {
         return triadList;
     }
 
-    public static void replaceRef(Triad ref, List<ParserToken> tokenList, Triad curTriad) {
+    public static void replaceRef(Triad ref, List<ParserToken> tokenList) {
         int index1 = Integer.parseInt(ref.getT1().getValue());
         int index2 = Integer.parseInt(ref.getT2().getValue());
         for (int j = index1; index1 != index2; index2--) {
@@ -76,25 +76,25 @@ public class Converter {
         List<ParserToken> tokenList = new ArrayList<>();
         for (int i = 0; i < triadList.size(); i++) {
             Triad curTriad = triadList.get(i);
-            if (curTriad.getOp().getType().equals(ParserTokenType.CONST)) continue;
+            if (curTriad.getOp().getType() == CONST) continue;
 
             int begin = tokenList.size();
 
-            if (curTriad.getT1().getType() == ParserTokenType.REF) {
+            if (curTriad.getT1().getType() == REF) {
                 Triad ref = triadList.get(Integer.parseInt(curTriad.getT1().getValue()));
                 begin = Integer.parseInt(ref.getT1().getValue());
-                replaceRef(ref, tokenList, curTriad);
+                replaceRef(ref, tokenList);
             }
             else if (curTriad.getT1().notBlank()) {
                 tokenList.add(curTriad.getT1());
             }
 
-            if (curTriad.getT2().getType() == ParserTokenType.REF) {
+            if (curTriad.getT2().getType() == REF) {
                 Triad ref = triadList.get(Integer.parseInt(curTriad.getT2().getValue()));
-                if (curTriad.getT1().getType() != ParserTokenType.REF) {
+                if (curTriad.getT1().getType() != REF) {
                     begin = Integer.parseInt(ref.getT1().getValue());
                 }
-                replaceRef(ref, tokenList, curTriad);
+                replaceRef(ref, tokenList);
             }
             else if (curTriad.getT2().notBlank()) {
                 tokenList.add(curTriad.getT2());
@@ -103,14 +103,14 @@ public class Converter {
             tokenList.add(curTriad.getOp());
             int end = tokenList.size();
 
-            triadList.set(i, new Triad(new ParserToken(ParserTokenType.REF, ""),
-                    new ParserToken(ParserTokenType.INT, valueOf(begin)),
-                    new ParserToken(ParserTokenType.INT, valueOf(end))));
+            triadList.set(i, new Triad(new ParserToken(REF, ""),
+                    new ParserToken(INT, valueOf(begin)),
+                    new ParserToken(INT, valueOf(end))));
 
         }
 
         for (int i=0; i<tokenList.size(); i++) {
-            if (tokenList.get(i).getType() == ParserTokenType.TRANS) {
+            if (tokenList.get(i).getType() == TRANS) {
                 int index = Integer.parseInt(tokenList.get(i-1).getValue());
                 tokenList.get(i-1).setValue(triadList.get(index).getT1().getValue());
             }
@@ -124,7 +124,7 @@ public class Converter {
     private static List<Triad> singleOp(List<Triad> triadList, List<ParserToken> token, HashMap<Integer, Integer> corr, int i, int dif) {
         triadList.add(new Triad(token.get(i), token.get(i-1), new ParserToken()));
         token.remove(i);
-        token.set(i-1, new ParserToken(ParserTokenType.REF, triadList.size()-1 + ""));
+        token.set(i-1, new ParserToken(REF, triadList.size()-1 + ""));
         for (int j=i+dif; j>=i+dif-1; j--) {
             if (corr.containsKey(j)) continue;
             corr.put(j, triadList.size()-1);
@@ -136,7 +136,7 @@ public class Converter {
         triadList.add(new Triad(token.get(i), token.get(i - 2), token.get(i - 1)));
         token.remove(i);
         token.remove(i-1);
-        token.set(i-2, new ParserToken(ParserTokenType.REF, triadList.size()-1 + ""));
+        token.set(i-2, new ParserToken(REF, triadList.size()-1 + ""));
         for (int j=i+dif; j>=i+dif-2; j--) {
             if (corr.containsKey(j)) continue;
             corr.put(j, triadList.size()-1);

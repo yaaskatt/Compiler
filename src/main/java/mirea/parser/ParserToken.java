@@ -1,6 +1,7 @@
 package mirea.parser;
 
 import mirea.lexer.LexerToken;
+import static mirea.parser.ParserTokenType.*;
 
 
 public class ParserToken {
@@ -19,7 +20,7 @@ public class ParserToken {
 
     public ParserToken() {
 
-        this.type = ParserTokenType.BLANK;
+        this.type = BLANK;
         this.value = "";
     }
 
@@ -40,7 +41,7 @@ public class ParserToken {
     }
 
     public boolean blank() {
-        return type == ParserTokenType.BLANK && value == "";
+        return type == BLANK && value == "";
     }
 
     public boolean notBlank() {

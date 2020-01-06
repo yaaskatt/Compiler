@@ -2,6 +2,7 @@ package mirea.interpreter;
 
 import mirea.parser.ParserToken;
 import mirea.parser.ParserTokenType;
+import static mirea.parser.ParserTokenType.*;
 import mirea.structures.CustomList;
 import mirea.structures.CustomSet;
 import mirea.table.Record;
@@ -70,43 +71,43 @@ public class Calculator {
     }
 
     public ParserToken disj(ParserToken arg2, ParserToken arg1) {
-        return new ParserToken(ParserTokenType.INT, boolToInt(intToBool(Integer.parseInt(arg1.getValue())) ||
+        return new ParserToken(INT, boolToInt(intToBool(Integer.parseInt(arg1.getValue())) ||
                 intToBool(Integer.parseInt(arg2.getValue()))).toString());
     }
 
     public ParserToken conj(ParserToken arg2, ParserToken arg1) {
-        return new ParserToken(ParserTokenType.INT, boolToInt(intToBool(Integer.parseInt(arg1.getValue())) &&
+        return new ParserToken(INT, boolToInt(intToBool(Integer.parseInt(arg1.getValue())) &&
                 intToBool(Integer.parseInt(arg2.getValue()))).toString());
     }
 
     public ParserToken isNotEq(ParserToken arg2, ParserToken arg1)
             throws Exception {
-        return new ParserToken(ParserTokenType.INT, boolToInt(compareToken(arg1, arg2) != 0).toString());
+        return new ParserToken(INT, boolToInt(compareToken(arg1, arg2) != 0).toString());
     }
 
     public ParserToken isEq(ParserToken arg2, ParserToken arg1)
             throws Exception {
-        return new ParserToken(ParserTokenType.INT, boolToInt(compareToken(arg1, arg2) == 0).toString());
+        return new ParserToken(INT, boolToInt(compareToken(arg1, arg2) == 0).toString());
     }
 
     public ParserToken isLessOrEq(ParserToken arg2, ParserToken arg1)
             throws Exception {
-        return new ParserToken(ParserTokenType.INT, boolToInt(compareToken(arg1, arg2) <= 0).toString());
+        return new ParserToken(INT, boolToInt(compareToken(arg1, arg2) <= 0).toString());
     }
 
     public ParserToken isBiggerOrEq(ParserToken arg2, ParserToken arg1)
             throws Exception {
-        return new ParserToken(ParserTokenType.INT, boolToInt(compareToken(arg1, arg2) >= 0).toString());
+        return new ParserToken(INT, boolToInt(compareToken(arg1, arg2) >= 0).toString());
     }
 
     public ParserToken isBigger(ParserToken arg2, ParserToken arg1)
             throws Exception {
-        return new ParserToken(ParserTokenType.INT, boolToInt(compareToken(arg1, arg2) > 0).toString());
+        return new ParserToken(INT, boolToInt(compareToken(arg1, arg2) > 0).toString());
     }
 
     public ParserToken isLess(ParserToken arg2, ParserToken arg1)
             throws Exception {
-        return new ParserToken(ParserTokenType.INT, boolToInt(compareToken(arg1, arg2) < 0).toString());
+        return new ParserToken(INT, boolToInt(compareToken(arg1, arg2) < 0).toString());
     }
 
     public Integer boolToInt(Boolean b) {
@@ -139,17 +140,17 @@ public class Calculator {
     public ParserToken contains(ParserToken el, ParserToken var) throws Exception {
         Record record = symbolTable.lookup(var.getValue());
 
-        if (el.getType() != ParserTokenType.INT) {
+        if (el.getType() != INT) {
             throw new Exception("Type mismatch: " + el.getType() + ", required: INT");
         }
 
         switch (record.getType()) {
             case LIST:
                 @SuppressWarnings("unchecked") CustomList<Integer> list = (CustomList<Integer>) record.getValue();
-                return new ParserToken(ParserTokenType.INT, boolToInt(list.contains(Integer.parseInt(el.getValue()))).toString());
+                return new ParserToken(INT, boolToInt(list.contains(Integer.parseInt(el.getValue()))).toString());
             case SET:
                 @SuppressWarnings("unchecked") CustomSet<Integer> set = (CustomSet<Integer>) record.getValue();
-                return new ParserToken(ParserTokenType.INT, boolToInt(set.contains(Integer.parseInt(el.getValue()))).toString());
+                return new ParserToken(INT, boolToInt(set.contains(Integer.parseInt(el.getValue()))).toString());
             default: throw new Exception("Trying yo put to type " + record.getType());
         }
     }
@@ -169,7 +170,7 @@ public class Calculator {
             default:
                 throw new Exception("Calling get on " + record.getType() + " variable.");
         }
-        if (val != null) return new ParserToken(ParserTokenType.INT, val.toString());
+        if (val != null) return new ParserToken(INT, val.toString());
         return null;
     }
 
@@ -177,7 +178,7 @@ public class Calculator {
             throws Exception {
         Record record = symbolTable.lookup(var.getValue());
 
-        if (el.getType() != ParserTokenType.INT) {
+        if (el.getType() != INT) {
             throw new Exception("Type mismatch: " + el.getType() + ", required: INT");
         }
 

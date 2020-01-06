@@ -3,6 +3,7 @@ package mirea.optimizer;
 import mirea.interpreter.Calculator;
 import mirea.parser.ParserToken;
 import mirea.parser.ParserTokenType;
+import static mirea.parser.ParserTokenType.*;
 import mirea.structures.CustomList;
 import mirea.structures.CustomSet;
 import mirea.table.Record;
@@ -33,7 +34,7 @@ public class Optimizer {
 
     private ParserToken replaceRefWithValue(ParserToken el, List<Triad> triads) {
         int index = Integer.parseInt(el.getValue());
-        if (triads.get(index).getOp().getType() == ParserTokenType.CONST) {
+        if (triads.get(index).getOp().getType() == CONST) {
             return triads.get(index).getT1();
         }
         return el;
@@ -47,7 +48,7 @@ public class Optimizer {
     }
 
     private boolean isConstant(ParserTokenType type) {
-        if (type == ParserTokenType.INT || type == ParserTokenType.DOUBLE || type == ParserTokenType.STRING) {
+        if (type == INT || type == DOUBLE || type == STRING) {
             return true;
         }
         return false;
@@ -74,8 +75,6 @@ public class Optimizer {
                         switch(ParserTokenType.valueOf(curTriad.getOp().getValue().toUpperCase())) {
                             case LIST:  value = new CustomList<Integer>(); break;
                             case SET:   value = new CustomSet<Integer>(); break;
-
-
                         }
                         if (constantsTable.lookup(curTriad.getT1().getValue()) == null) {
                             constantsTable.insertSymbol(new Record(curTriad.getT1().getValue(), value,
@@ -95,14 +94,14 @@ public class Optimizer {
 
             origTempList.add(new Triad(curTriad));
 
-            if (curTriad.getT1().getType() == ParserTokenType.VAR) {
+            if (curTriad.getT1().getType() == VAR) {
                 ParserToken replToken = replaceVarWithValue(curTriad.getT1());
                 if (replToken != curTriad.getT1()) {
                     curTriad.setT1(replaceVarWithValue(curTriad.getT1()));
                     logger.info("ARG1 REPLACED WITH VALUE\t" + triadStr(curTriad) + "\n");
                 }
             }
-            else if (curTriad.getT1().getType().equals(ParserTokenType.REF)) {
+            else if (curTriad.getT1().getType().equals(REF)) {
                 ParserToken replToken = replaceRefWithValue(curTriad.getT1(), triadList);
                 if (replToken != curTriad.getT1()) {
                     curTriad.setT1(replaceRefWithValue(curTriad.getT1(), triadList));
@@ -110,14 +109,14 @@ public class Optimizer {
                 }
             }
 
-            if (curTriad.getT2().getType() == ParserTokenType.VAR) {
+            if (curTriad.getT2().getType() == VAR) {
                 ParserToken replToken = replaceVarWithValue(curTriad.getT2());
                 if (replToken != curTriad.getT2()) {
                     curTriad.setT2(replaceVarWithValue(curTriad.getT2()));
                     logger.info("ARG2 REPLACED WITH VALUE\t" + triadStr(curTriad) + "\n");
                 }
             }
-            else if (curTriad.getT2().getType().equals(ParserTokenType.REF)) {
+            else if (curTriad.getT2().getType().equals(REF)) {
                 ParserToken replToken = replaceRefWithValue(curTriad.getT2(), triadList);
                 if (replToken != curTriad.getT2()) {
                     curTriad.setT2(replaceRefWithValue(curTriad.getT2(), triadList));
@@ -147,7 +146,7 @@ public class Optimizer {
                 continue;
             }
 
-            if (curTriad.getOp().getType() == ParserTokenType.OP) {
+            if (curTriad.getOp().getType() == OP) {
                 boolean flag = true;
                 if (isConstant(curTriad)) {
                     switch (curTriad.getOp().getValue()) {

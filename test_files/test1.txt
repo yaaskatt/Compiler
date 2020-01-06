@@ -1,4 +1,0 @@
-int a;
-a = 5+4*2;
-List b;
-b.add(a);

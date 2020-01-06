@@ -45,7 +45,7 @@ public class ComplexTest {
                     tr.getT1().getType(), tr.getT1().getValue(), tr.getT2().getType(), tr.getT2().getValue());
         }
         parserTokenList = conv.triads_toReverseNot(triads);
-        Interpreter interpreter = new Interpreter(testFolder + "ComplexTestResult.txt");
+        Interpreter interpreter = new Interpreter(testFolder + "Result.txt");
         interpreter.count(parserTokenList);
     }
 }
