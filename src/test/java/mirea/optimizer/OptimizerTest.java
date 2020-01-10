@@ -15,7 +15,7 @@ public class OptimizerTest {
 
     @Test
     public void findConstants() {
-        Lexer lexer = new Lexer(testFolder + "OptimTest");
+        Lexer lexer = new Lexer(testFolder + "ComplexTest");
         List<LexerToken> lexerTokenList = lexer.getAllTokens();
         assertFalse(lexerTokenList.isEmpty());
         for (LexerToken lexerToken : lexerTokenList) {

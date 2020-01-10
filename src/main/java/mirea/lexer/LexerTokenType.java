@@ -4,7 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum LexerTokenType {
-
+    FUNC ("func"),
+    RETURN ("return"),
     OP ("^(\\-|\\+|\\*|\\/)"),
     COMP_OP("(==|!=|<=|>=|<|>)"),
     LOG_OP("(\\&\\&|\\|\\|)"),

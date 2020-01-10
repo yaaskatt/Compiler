@@ -10,7 +10,7 @@ public class LexerTest {
 
     @Test
     public void getAllTokens() {
-        Lexer lexer = new Lexer(testFolder + "OptimTest");
+        Lexer lexer = new Lexer(testFolder + "tempTest.txt");
         List<LexerToken> tokenList = lexer.getAllTokens();
         for (LexerToken token : tokenList) {
             System.out.printf("tokenType: %s, value: %s\n", token.getType(), token.getValue());
