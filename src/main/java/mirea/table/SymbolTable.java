@@ -1,6 +1,7 @@
 package mirea.table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -23,6 +24,10 @@ public class SymbolTable {
 
     public void insertSymbol(Record record){
         tables.get(position).put(record.getName(), record);
+    }
+
+    public void insertAll(ArrayList<Record> records){
+        records.forEach(record -> tables.get(position).put(record.getName(), record));
     }
 
     public void deleteSymbol(Record record) {

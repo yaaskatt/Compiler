@@ -13,6 +13,10 @@ public class Record {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "name: " + name + ", value: " + value + ", type: " + type;
+    }
 
     public String getName() {
         return name;
