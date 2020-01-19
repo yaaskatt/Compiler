@@ -61,4 +61,8 @@ public class SymbolTable {
     public int position() {
         return this.position;
     }
+
+    public void insertSymbols(ArrayList<Record> args) {
+        args.forEach(this::insertSymbol);
+    }
 }

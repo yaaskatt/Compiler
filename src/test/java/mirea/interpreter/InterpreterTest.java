@@ -1,17 +1,11 @@
 package mirea.interpreter;
 
-import mirea.lexer.Lexer;
-import mirea.lexer.LexerToken;
-import mirea.parser.Parser;
 import mirea.parser.ParserToken;
 import mirea.parser.ParserTokenType;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertFalse;
 
 public class InterpreterTest {
 
@@ -61,19 +55,34 @@ public class InterpreterTest {
     }
 
     @Test
-    public void funcWithParserTest() throws Exception {
-        Lexer lexer = new Lexer(testFolder + "tempTest.txt");
-        List<LexerToken> tokenList = lexer.getAllTokens();
-        assertFalse(tokenList.isEmpty());
-        for (LexerToken lexerToken : tokenList) {
-            System.out.printf("tokenType: %s, lexema: %s\n", lexerToken.getType(), lexerToken.getValue());
-        }
-        Parser parser = new Parser(tokenList);
-        List<ParserToken> out = (parser.lang());
-        for (int i=0; i<out.size(); i++) {
-            System.out.printf("%d: type: %s, value: %s\n", i, out.get(i).getType(), out.get(i).getValue());
-        }
+    public void globalVarTest() throws Exception {
+        ArrayList<ParserToken> input = new ArrayList<>();
+        input.add(new ParserToken(ParserTokenType.STRING, "foo"));  //
+        input.add(new ParserToken(ParserTokenType.INT, "a"));       // argv...
+        input.add(new ParserToken(ParserTokenType.INT, "b"));       //
+        input.add(new ParserToken(ParserTokenType.INT, "2"));       // argc
+        input.add(new ParserToken(ParserTokenType.FUNC, "func"));
+        input.add(new ParserToken(ParserTokenType.ENTER_SCOPE, "{"));
+        input.add(new ParserToken(ParserTokenType.VAR, "a"));
+        input.add(new ParserToken(ParserTokenType.VAR, "b"));
+        input.add(new ParserToken(ParserTokenType.VAR, "c"));
+        input.add(new ParserToken(ParserTokenType.OP, "+"));
+        input.add(new ParserToken(ParserTokenType.OP, "+"));
+        input.add(new ParserToken(ParserTokenType.RETURN, "return"));
+        input.add(new ParserToken(ParserTokenType.EXIT_SCOPE, "}"));
+        input.add(new ParserToken(ParserTokenType.INT, "c"));
+        input.add(new ParserToken(ParserTokenType.DEF, "int"));
+        input.add(new ParserToken(ParserTokenType.ADR, "c"));
+        input.add(new ParserToken(ParserTokenType.INT, "10"));
+        input.add(new ParserToken(ParserTokenType.OP, "="));
+        input.add(new ParserToken(ParserTokenType.INT, "2"));
+        input.add(new ParserToken(ParserTokenType.INT, "4"));
+        input.add(new ParserToken(ParserTokenType.STRING, "foo"));
+        input.add(new ParserToken(ParserTokenType.EXEC, "exec"));
+        input.add(new ParserToken(ParserTokenType.RETURN, "return"));
+
+
         Interpreter interpreter = new Interpreter();
-        Assert.assertEquals(0, interpreter.count(out));
+        Assert.assertEquals(16, interpreter.count(input));
     }
 }

@@ -76,13 +76,16 @@ class Interpreter {
             arg.setValue(stack.pop().getValue()); //TODO: add type checks
         }
         Interpreter funcInterpreter = new Interpreter();
-        funcInterpreter.addToSymbolTable(funcHolder.getArgs());
+        symbolTable.enterScope();
+        symbolTable.insertSymbols(funcHolder.getArgs());
+        funcInterpreter.setSymbolTable(symbolTable);
         int result = funcInterpreter.count(funcHolder.getBody());
+        symbolTable.exitScope();
         if (funcHolder.getReturnValue() != null) stack.push(new ParserToken(INT, "" + result));
     }
 
     // return position after body in input RPN
-    private int makeFunc(int pos, List<ParserToken> parserTokenList) throws Exception {
+    private int makeFunc(int pos, List<ParserToken> parserTokenList) {
         int argc = Integer.parseInt(stack.pop().getValue());
         ArrayList<Record> args = new ArrayList<>();
         for (int i = 0; i < argc; i++) {
@@ -90,17 +93,16 @@ class Interpreter {
             args.add(new Record(token.getValue(), null, token.getType()));
         }
         String name = stack.pop().getValue();
-        if (!parserTokenList.get(++pos).getType().equals(ENTER_SCOPE)) {
-            throw new Exception("Could not find body of function " + name);
-        }
         List<ParserToken> body = new ArrayList<>();
         ParserToken returnVal = null;
-        for (ParserToken current; !((current = parserTokenList.get(++pos)).getType().equals(EXIT_SCOPE));) {
+        ParserToken current;
+        do {
+            current = parserTokenList.get(++pos);
             if (current.getType().equals(RETURN)) returnVal = current;
             body.add(current);
-        }
+        } while (!(current.getType().equals(EXIT_SCOPE)));
         functions.put(name, new FuncHolder(name, args, returnVal, body));
-        symbolTable.insertSymbol(new Record("func", name, FUNC));
+        //symbolTable.insertSymbol(new Record("func", name, FUNC));
         return pos;
     }
 
@@ -176,9 +178,8 @@ class Interpreter {
         symbolTable.insertSymbol(new Record(name, value, ParserTokenType.valueOf(type.toUpperCase())));
     }
 
-    public void addToSymbolTable (ArrayList<Record> records){
-        logger.log(Level.INFO, "adding to new interpreter symbol table " + records);
-        this.symbolTable.insertAll(records);
+    public void setSymbolTable(SymbolTable table){
+        this.symbolTable = table;
     }
 
     private ParserToken getSymData(ParserToken token) throws Exception {
