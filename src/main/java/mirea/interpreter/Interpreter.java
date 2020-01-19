@@ -48,7 +48,6 @@ class Interpreter {
                  case INT:
                  case DOUBLE:
                  case STRING:
-                 case ARG:
                  case ADR:     stack.push(token); break;
                  case VAR:     stack.push(getSymData(token)); break;
                  case DEF:     insertSym(stack.pop().getValue(), token.getValue()); break;
@@ -87,9 +86,8 @@ class Interpreter {
         int argc = Integer.parseInt(stack.pop().getValue());
         ArrayList<Record> args = new ArrayList<>();
         for (int i = 0; i < argc; i++) {
-            String type = stack.pop().getValue();
-            String name = stack.pop().getValue();
-            args.add(new Record(name, null, stringToType(type)));
+            ParserToken token = stack.pop();
+            args.add(new Record(token.getValue(), null, token.getType()));
         }
         String name = stack.pop().getValue();
         if (!parserTokenList.get(++pos).getType().equals(ENTER_SCOPE)) {
