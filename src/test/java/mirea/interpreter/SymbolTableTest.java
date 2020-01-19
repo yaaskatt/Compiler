@@ -1,5 +1,6 @@
-/*package mirea.interpreter;
+package mirea.interpreter;
 
+import mirea.parser.ParserTokenType;
 import mirea.table.Record;
 import mirea.table.SymbolTable;
 import org.junit.Assert;
@@ -28,7 +29,7 @@ public class SymbolTableTest {
     @Test
     public void insertSymbol() {
         SymbolTable symbolTable = new SymbolTable();
-        Record test = new Record("a", "1", "int");
+        Record test = new Record("a", "1", ParserTokenType.INT);
         symbolTable.insertSymbol(test);
         assertEquals(test, symbolTable.tables().get(0).get("a"));
     }
@@ -36,10 +37,10 @@ public class SymbolTableTest {
     @Test
     public void lookup() {
         SymbolTable symbolTable = new SymbolTable();
-        symbolTable.insertSymbol(new Record("a", "1", "int"));
-        symbolTable.insertSymbol(new Record("b", "1", "int"));
+        symbolTable.insertSymbol(new Record("a", "1", ParserTokenType.INT));
+        symbolTable.insertSymbol(new Record("b", "1", ParserTokenType.INT));
         symbolTable.enterScope();
-        symbolTable.insertSymbol(new Record("b", "2", "int"));
+        symbolTable.insertSymbol(new Record("b", "2", ParserTokenType.INT));
         assertEquals("1", symbolTable.lookup("a").getValue());
         assertEquals("2", symbolTable.lookup("b").getValue());
         symbolTable.exitScope();
@@ -50,10 +51,9 @@ public class SymbolTableTest {
     public void localLookup() {
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.enterScope();
-        Record test = new Record("a", "1", "int");
+        Record test = new Record("a", "1", ParserTokenType.INT);
         symbolTable.insertSymbol(test);
         assertEquals( test, symbolTable.lookup("a"));
         assertNull(symbolTable.lookup("b"));
     }
 }
-*/

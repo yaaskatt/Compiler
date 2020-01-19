@@ -18,7 +18,7 @@ import mirea.table.SymbolTable;
 
 class Interpreter {
 
-    private LinkedList<ParserToken> s = new LinkedList<>();
+    private LinkedList<ParserToken> stack = new LinkedList<>();
     private SymbolTable symbolTable = new SymbolTable();
     private Logger logger = Logger.getLogger(Interpreter.class.getName());
     private Calculator calculator = new Calculator(symbolTable, logger);
@@ -45,19 +45,19 @@ class Interpreter {
                  case INT:
                  case DOUBLE:
                  case STRING:
-                 case ADR:     s.push(token); break;
-                 case VAR:     s.push(getSymData(token)); break;
-                 case DEF:     insertSym(s.pop().getValue(), token.getValue()); break;
+                 case ADR:     stack.push(token); break;
+                 case VAR:     stack.push(getSymData(token)); break;
+                 case DEF:     insertSym(stack.pop().getValue(), token.getValue()); break;
                  case TRANS:
                      /* Безусловный переход */
-                     if (token.getValue().equals("!")) i = Integer.parseInt(s.pop().getValue()) - 1;
+                     if (token.getValue().equals("!")) i = Integer.parseInt(stack.pop().getValue()) - 1;
                      /* Переход по лжи */
                      else {
-                         int index = Integer.parseInt(s.pop().getValue()) - 1;
-                         if (!isTrue(s.pop())) i = index;
+                         int index = Integer.parseInt(stack.pop().getValue()) - 1;
+                         if (!isTrue(stack.pop())) i = index;
                      }
                      break;
-                 default: logger.severe("Unsupported type: " + token.getType());
+                 default: throw new Exception("Unsupported type: " + token.getType());
              }
          }
          return 0;
@@ -65,28 +65,28 @@ class Interpreter {
 
     private void processOp(String value) throws Exception {
         switch (value){
-            case "+":       s.push(calculator.sum(s.pop(), s.pop())); break;
-            case "-":       s.push(calculator.dif(s.pop(), s.pop())); break;
-            case "*":       s.push(calculator.mult(s.pop(), s.pop())); break;
-            case "/":       s.push(calculator.div(s.pop(), s.pop())); break;
+            case "+":       stack.push(calculator.sum(stack.pop(), stack.pop())); break;
+            case "-":       stack.push(calculator.dif(stack.pop(), stack.pop())); break;
+            case "*":       stack.push(calculator.mult(stack.pop(), stack.pop())); break;
+            case "/":       stack.push(calculator.div(stack.pop(), stack.pop())); break;
 
-            case "<":       s.push(calculator.isLess(s.pop(), s.pop())); break;
-            case ">":       s.push(calculator.isBigger(s.pop(), s.pop())); break;
-            case ">=":      s.push(calculator.isBiggerOrEq(s.pop(), s.pop())); break;
-            case "<=":      s.push(calculator.isLessOrEq(s.pop(), s.pop())); break;
-            case "==":      s.push(calculator.isEq(s.pop(), s.pop())); break;
-            case "!=":      s.push(calculator.isNotEq(s.pop(), s.pop())); break;
+            case "<":       stack.push(calculator.isLess(stack.pop(), stack.pop())); break;
+            case ">":       stack.push(calculator.isBigger(stack.pop(), stack.pop())); break;
+            case ">=":      stack.push(calculator.isBiggerOrEq(stack.pop(), stack.pop())); break;
+            case "<=":      stack.push(calculator.isLessOrEq(stack.pop(), stack.pop())); break;
+            case "==":      stack.push(calculator.isEq(stack.pop(), stack.pop())); break;
+            case "!=":      stack.push(calculator.isNotEq(stack.pop(), stack.pop())); break;
 
-            case "&&":      s.push(calculator.conj(s.pop(), s.pop())); break;
-            case "||":      s.push(calculator.disj(s.pop(), s.pop())); break;
+            case "&&":      stack.push(calculator.conj(stack.pop(), stack.pop())); break;
+            case "||":      stack.push(calculator.disj(stack.pop(), stack.pop())); break;
 
-            case "=":       assignVal(s.pop(), s.pop()); break;
+            case "=":       assignVal(stack.pop(), stack.pop()); break;
 
-            case "add":         calculator.add(s.pop(), s.pop()); break;
-            case "get":         s.push(calculator.get(s.pop(), s.pop())); break;
-            case "contains":    s.push(calculator.contains(s.pop(), s.pop())); break;
+            case "add":         calculator.add(stack.pop(), stack.pop()); break;
+            case "get":         stack.push(calculator.get(stack.pop(), stack.pop())); break;
+            case "contains":    stack.push(calculator.contains(stack.pop(), stack.pop())); break;
             
-            case "print":   System.out.println("" + s.pop().getValue()); break;
+            case "print":   System.out.println("" + stack.pop().getValue()); break;
 
             default:        logger.severe("Operator " + value + " not supported");
         }

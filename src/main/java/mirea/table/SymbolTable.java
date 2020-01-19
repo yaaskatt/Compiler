@@ -52,4 +52,8 @@ public class SymbolTable {
     public ArrayList<HashMap<String, Record>> tables() {
         return tables;
     }
+
+    public int position() {
+        return this.position;
+    }
 }

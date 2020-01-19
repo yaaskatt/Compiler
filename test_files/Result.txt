@@ -1,3 +1,392 @@
 cycle
 cycle
 15
+tokenType: FUNC, value: func
+tokenType: VAR, value: a
+tokenType: L_RB, value: (
+tokenType: TYPE, value: int
+tokenType: VAR, value: b
+tokenType: COMMA, value: ,
+tokenType: TYPE, value: int
+tokenType: VAR, value: c
+tokenType: COMMA, value: ,
+tokenType: TYPE, value: int
+tokenType: VAR, value: l
+tokenType: R_RB, value: )
+tokenType: L_CB, value: {
+tokenType: VAR, value: b
+tokenType: ASSIGN_OP, value: =
+tokenType: VAR, value: b
+tokenType: OP, value: +
+tokenType: VAR, value: c
+tokenType: SEMI, value: ;
+tokenType: RETURN, value: return
+tokenType: VAR, value: b
+tokenType: SEMI, value: ;
+tokenType: R_CB, value: }
+tokenType: TYPE, value: int
+tokenType: VAR, value: k
+tokenType: SEMI, value: ;
+tokenType: VAR, value: k
+tokenType: ASSIGN_OP, value: =
+tokenType: INT, value: 0
+tokenType: SEMI, value: ;
+tokenType: TYPE, lexema: List
+tokenType: VAR, lexema: k
+tokenType: SEMI, lexema: ;
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: a
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: a
+tokenType: ASSIGN_OP, lexema: =
+tokenType: INT, lexema: 1
+tokenType: SEMI, lexema: ;
+tokenType: WHILE, lexema: while
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: a
+tokenType: COMP_OP, lexema: <
+tokenType: INT, lexema: 5
+tokenType: R_RB, lexema: )
+tokenType: DO, lexema: do
+tokenType: L_CB, lexema: {
+tokenType: PRINT, lexema: print
+tokenType: STRING, lexema: "cycle"
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: a
+tokenType: ASSIGN_OP, lexema: =
+tokenType: VAR, lexema: a
+tokenType: OP, lexema: +
+tokenType: INT, lexema: 2
+tokenType: SEMI, lexema: ;
+tokenType: R_CB, lexema: }
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: b
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: b
+tokenType: ASSIGN_OP, lexema: =
+tokenType: INT, lexema: 8
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: b
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 2
+tokenType: OP, lexema: +
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 0
+tokenType: R_RB, lexema: )
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: a
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 2
+tokenType: R_RB, lexema: )
+tokenType: OP, lexema: +
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 1
+tokenType: R_RB, lexema: )
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: PRINT, lexema: print
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 3
+tokenType: R_RB, lexema: )
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+0: DEF List (ADR k, BLANK )
+1: DEF int (ADR a, BLANK )
+2: OP = (ADR a, INT 1)
+3: OP < (VAR a, INT 5)
+4: TRANS !F (REF 3, INT 11)
+5: ENTER_SCOPE { (BLANK , BLANK )
+6: OP print (STRING cycle, BLANK )
+7: OP + (VAR a, INT 2)
+8: OP = (ADR a, REF 7)
+9: EXIT_SCOPE } (BLANK , BLANK )
+10: TRANS ! (INT 3, BLANK )
+11: DEF int (ADR b, BLANK )
+12: OP = (ADR b, INT 8)
+13: OP add (ADR k, VAR b)
+14: OP get (ADR k, INT 0)
+15: OP + (INT 2, REF 14)
+16: OP add (ADR k, REF 15)
+17: OP add (ADR k, VAR a)
+18: OP get (ADR k, INT 2)
+19: OP get (ADR k, INT 1)
+20: OP + (REF 18, REF 19)
+21: OP add (ADR k, REF 20)
+22: OP get (ADR k, INT 3)
+23: OP print (REF 22, BLANK )
+tokenType: TYPE, lexema: List
+tokenType: VAR, lexema: k
+tokenType: SEMI, lexema: ;
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: a
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: a
+tokenType: ASSIGN_OP, lexema: =
+tokenType: INT, lexema: 1
+tokenType: SEMI, lexema: ;
+tokenType: WHILE, lexema: while
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: a
+tokenType: COMP_OP, lexema: <
+tokenType: INT, lexema: 5
+tokenType: R_RB, lexema: )
+tokenType: DO, lexema: do
+tokenType: L_CB, lexema: {
+tokenType: PRINT, lexema: print
+tokenType: STRING, lexema: "cycle"
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: a
+tokenType: ASSIGN_OP, lexema: =
+tokenType: VAR, lexema: a
+tokenType: OP, lexema: +
+tokenType: INT, lexema: 2
+tokenType: SEMI, lexema: ;
+tokenType: R_CB, lexema: }
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: b
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: b
+tokenType: ASSIGN_OP, lexema: =
+tokenType: INT, lexema: 8
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: b
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 2
+tokenType: OP, lexema: +
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 0
+tokenType: R_RB, lexema: )
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: a
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: ADD, lexema: add
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 2
+tokenType: R_RB, lexema: )
+tokenType: OP, lexema: +
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 1
+tokenType: R_RB, lexema: )
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+tokenType: PRINT, lexema: print
+tokenType: L_RB, lexema: (
+tokenType: VAR, lexema: k
+tokenType: DOT, lexema: .
+tokenType: GET, lexema: get
+tokenType: L_RB, lexema: (
+tokenType: INT, lexema: 3
+tokenType: R_RB, lexema: )
+tokenType: R_RB, lexema: )
+tokenType: SEMI, lexema: ;
+0: DEF List (ADR k, BLANK )
+1: DEF int (ADR a, BLANK )
+2: OP = (ADR a, INT 1)
+3: OP < (VAR a, INT 5)
+4: TRANS !F (REF 3, INT 11)
+5: ENTER_SCOPE { (BLANK , BLANK )
+6: OP print (STRING cycle, BLANK )
+7: OP + (VAR a, INT 2)
+8: OP = (ADR a, REF 7)
+9: EXIT_SCOPE } (BLANK , BLANK )
+10: TRANS ! (INT 3, BLANK )
+11: DEF int (ADR b, BLANK )
+12: OP = (ADR b, INT 8)
+13: OP add (ADR k, VAR b)
+14: OP get (ADR k, INT 0)
+15: OP + (INT 2, REF 14)
+16: OP add (ADR k, REF 15)
+17: OP add (ADR k, VAR a)
+18: OP get (ADR k, INT 2)
+19: OP get (ADR k, INT 1)
+20: OP + (REF 18, REF 19)
+21: OP add (ADR k, REF 20)
+22: OP get (ADR k, INT 3)
+23: OP print (REF 22, BLANK )
+0: DEF List (ADR k, BLANK )
+1: DEF int (ADR a, BLANK )
+2: OP = (ADR a, INT 1)
+3: OP < (VAR a, INT 5)
+4: TRANS !F (REF 3, INT 11)
+5: ENTER_SCOPE { (BLANK , BLANK )
+6: OP print (STRING cycle, BLANK )
+7: OP + (VAR a, INT 2)
+8: OP = (ADR a, REF 7)
+9: EXIT_SCOPE } (BLANK , BLANK )
+10: TRANS ! (INT 3, BLANK )
+11: DEF int (ADR b, BLANK )
+12: OP = (ADR b, INT 8)
+13: OP add (ADR k, INT 8)
+14: CONST const (INT 8, BLANK )
+15: CONST const (INT 10, BLANK )
+16: OP add (ADR k, INT 10)
+17: OP add (ADR k, VAR a)
+18: OP get (ADR k, INT 2)
+19: OP get (ADR k, INT 1)
+20: OP + (REF 18, REF 19)
+21: OP add (ADR k, REF 20)
+22: OP get (ADR k, INT 3)
+23: OP print (REF 22, BLANK )
+0: type: ADR, value: k
+1: type: DEF, value: List
+2: type: ADR, value: a
+3: type: DEF, value: int
+4: type: ADR, value: a
+5: type: INT, value: 1
+6: type: OP, value: =
+7: type: VAR, value: a
+8: type: INT, value: 5
+9: type: OP, value: <
+10: type: INT, value: 23
+11: type: TRANS, value: !F
+12: type: ENTER_SCOPE, value: {
+13: type: STRING, value: cycle
+14: type: OP, value: print
+15: type: ADR, value: a
+16: type: VAR, value: a
+17: type: INT, value: 2
+18: type: OP, value: +
+19: type: OP, value: =
+20: type: EXIT_SCOPE, value: }
+21: type: INT, value: 7
+22: type: TRANS, value: !
+23: type: ADR, value: b
+24: type: DEF, value: int
+25: type: ADR, value: b
+26: type: INT, value: 8
+27: type: OP, value: =
+28: type: ADR, value: k
+29: type: INT, value: 8
+30: type: OP, value: add
+31: type: ADR, value: k
+32: type: INT, value: 10
+33: type: OP, value: add
+34: type: ADR, value: k
+35: type: VAR, value: a
+36: type: OP, value: add
+37: type: ADR, value: k
+38: type: ADR, value: k
+39: type: INT, value: 1
+40: type: OP, value: get
+41: type: ADR, value: k
+42: type: INT, value: 2
+43: type: OP, value: get
+44: type: OP, value: +
+45: type: OP, value: add
+46: type: ADR, value: k
+47: type: INT, value: 3
+48: type: OP, value: get
+49: type: OP, value: print
+tokenType: FUNC, lexema: func
+tokenType: VAR, lexema: a
+tokenType: L_RB, lexema: (
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: b
+tokenType: COMMA, lexema: ,
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: c
+tokenType: COMMA, lexema: ,
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: l
+tokenType: R_RB, lexema: )
+tokenType: L_CB, lexema: {
+tokenType: VAR, lexema: b
+tokenType: ASSIGN_OP, lexema: =
+tokenType: VAR, lexema: b
+tokenType: OP, lexema: +
+tokenType: VAR, lexema: c
+tokenType: SEMI, lexema: ;
+tokenType: RETURN, lexema: return
+tokenType: VAR, lexema: b
+tokenType: SEMI, lexema: ;
+tokenType: R_CB, lexema: }
+tokenType: TYPE, lexema: int
+tokenType: VAR, lexema: k
+tokenType: SEMI, lexema: ;
+tokenType: VAR, lexema: k
+tokenType: ASSIGN_OP, lexema: =
+tokenType: INT, lexema: 0
+tokenType: SEMI, lexema: ;
+0: type: STRING, value: a
+1: type: ADR, value: b
+2: type: DEF, value: int
+3: type: ADR, value: c
+4: type: DEF, value: int
+5: type: ADR, value: l
+6: type: DEF, value: int
+7: type: INT, value: 3
+8: type: FUNC, value: func
+9: type: ENTER_SCOPE, value: {
+10: type: ADR, value: b
+11: type: VAR, value: b
+12: type: VAR, value: c
+13: type: OP, value: +
+14: type: OP, value: =
+15: type: VAR, value: b
+16: type: RETURN, value: return
+17: type: EXIT_SCOPE, value: }
+18: type: ADR, value: k
+19: type: DEF, value: int
+20: type: ADR, value: k
+21: type: INT, value: 0
+22: type: OP, value: =
