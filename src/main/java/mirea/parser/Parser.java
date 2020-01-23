@@ -50,9 +50,7 @@ public class Parser {
 
     private boolean var_declar_stmt() {
         int begNum = num;
-        if (TYPE() && VAR()) {
-            SEMI();
-            COMMA();
+        if (TYPE() && VAR() && SEMI()) {
             return true;
         }
         num = begNum;
@@ -63,7 +61,8 @@ public class Parser {
         int begNum = num;
         if (FUNC() && VAR() && L_RB()) {
             int argsNum = 0;
-            while(var_declar_stmt()) {
+            while(TYPE() && VAR()) {
+                COMMA();
                 argsNum++;
             }
             if (R_RB()) {
@@ -437,18 +436,19 @@ public class Parser {
         }
     }
 
-    private void fromStackWithDeclaration() {
-        if (s.peek().getType() == LexerTokenType.TYPE )
-            parserTokenList.set(parserTokenList.size() -1, new ParserToken(ADR,
-                    parserTokenList.get(parserTokenList.size()-1).getValue()));
-        parserTokenList.add(toParserToken(s.pop()));
+    private void assingLastValueType() {
+        parserTokenList.set(parserTokenList.size()-1, new ParserToken(
+                ParserTokenType.valueOf(s.pop().getValue().toUpperCase()),
+                parserTokenList.get(parserTokenList.size()-1).getValue())
+        );
     }
 
     private void toReverseNot(LexerToken lexerToken) {
         switch (lexerToken.getType()) {
             case R_RB:
+                if (s.peek().getType() == TYPE) assingLastValueType();
                 while (s.peek().getType() != L_RB) {
-                    fromStackWithDeclaration();
+                    s.pop();
                 }
                 s.pop();
                 break;
@@ -510,11 +510,14 @@ public class Parser {
                 break;
             case SEMI:
                 while (!s.isEmpty()) {
-                    fromStackWithDeclaration();
+                    if (s.peek().getType() == LexerTokenType.TYPE )
+                        parserTokenList.set(parserTokenList.size() -1, new ParserToken(ADR,
+                                parserTokenList.get(parserTokenList.size()-1).getValue()));
+                    parserTokenList.add(toParserToken(s.pop()));
                 }
                 break;
             case COMMA:
-                fromStackWithDeclaration();
+                assingLastValueType();
                 break;
             case THEN:
             case DO:
