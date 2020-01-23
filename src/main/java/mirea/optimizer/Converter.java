@@ -57,7 +57,10 @@ public class Converter {
             }
         }
         for (ParserToken token : trans_ref) {
-            token.setValue(valueOf(corr.get(Integer.parseInt(token.getValue()))));
+            if (!corr.containsKey(Integer.parseInt(token.getValue()))) {
+                token.setValue(triadList.size() + "");
+            }
+            else token.setValue(valueOf(corr.get(Integer.parseInt(token.getValue()))));
         }
         return triadList;
     }
@@ -112,7 +115,11 @@ public class Converter {
         for (int i=0; i<tokenList.size(); i++) {
             if (tokenList.get(i).getType() == TRANS) {
                 int index = Integer.parseInt(tokenList.get(i-1).getValue());
-                tokenList.get(i-1).setValue(triadList.get(index).getT1().getValue());
+                if (index < triadList.size())
+                    tokenList.get(i-1).setValue(triadList.get(index).getT1().getValue());
+                else {
+                    tokenList.get(i-1).setValue(tokenList.size() + "");
+                }
             }
         }
 

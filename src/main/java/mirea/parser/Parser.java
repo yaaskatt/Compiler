@@ -467,7 +467,7 @@ public class Parser {
             case R_RB:
                 if (s.peek().getType() == TYPE) assingLastValueType();
                 while (s.peek().getType() != L_RB) {
-                    parserTokenList.add(new ParserToken(s.pop()));
+                    parserTokenList.add(toParserToken(s.pop()));
                 }
                 s.pop();
                 break;
@@ -520,7 +520,7 @@ public class Parser {
             case INT:
             case STRING:
             case VAR:
-                if (!s.isEmpty() && s.peek().getType() == LexerTokenType.FUNC) {
+                if (!s.isEmpty() && (s.peek().getType() == LexerTokenType.FUNC || s.peek().getType() == LexerTokenType.EXEC)) {
                     parserTokenList.add(new ParserToken(ParserTokenType.STRING, curLexerToken.getValue()));
                 }
                 else {
