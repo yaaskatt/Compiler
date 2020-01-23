@@ -18,6 +18,5 @@ public enum ParserTokenType {
     REF,
     CONST,
     BLANK,
-    ARG,
     EXEC
 }

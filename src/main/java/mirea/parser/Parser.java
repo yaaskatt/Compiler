@@ -32,7 +32,7 @@ public class Parser {
 
     private boolean expr() {
         int begNum = num;
-        if (declar_stmt() || assign_stmt() || while_stmt() || if_stmt() || objectOp_stmt() || print_stmt() || return_stmt()) {
+        if (declar_stmt() || assign_stmt() || while_stmt() || if_stmt() || objectOp_stmt() || print_stmt() || return_stmt() || exec_stmt()) {
             return true;
         }
         num = begNum;
@@ -194,9 +194,24 @@ public class Parser {
         return false;
     }
 
+    private boolean exec_stmt() {
+        int begNum = num;
+        if (EXEC() && VAR() && L_RB()) {
+            while (value_stmt()) {
+                COMMA();
+            }
+            if (R_RB()) {
+                SEMI();
+                return true;
+            }
+        }
+        num = begNum;
+        return false;
+    }
+
     private boolean value() {
         int begNum = num;
-        if (VAR() || num()) {
+        if (VAR() || num() || exec_stmt()) {
             return true;
         }
         num = begNum;
@@ -290,6 +305,10 @@ public class Parser {
 
     private boolean FUNC() {
         return checkToken(LexerTokenType.FUNC);
+    }
+
+    private boolean EXEC() {
+        return checkToken(LexerTokenType.EXEC);
     }
 
     private boolean ASSIGN_OP() {
@@ -448,7 +467,7 @@ public class Parser {
             case R_RB:
                 if (s.peek().getType() == TYPE) assingLastValueType();
                 while (s.peek().getType() != L_RB) {
-                    s.pop();
+                    parserTokenList.add(new ParserToken(s.pop()));
                 }
                 s.pop();
                 break;
@@ -493,6 +512,7 @@ public class Parser {
                         parserTokenList.get(parserTokenList.size() - 1).getValue()));
             case TYPE:
             case FUNC:
+            case EXEC:
             case PRINT:
                 s.add(curLexerToken);
                 break;
@@ -517,7 +537,7 @@ public class Parser {
                 }
                 break;
             case COMMA:
-                assingLastValueType();
+                if (s.peek().getType() == TYPE) assingLastValueType();
                 break;
             case THEN:
             case DO:

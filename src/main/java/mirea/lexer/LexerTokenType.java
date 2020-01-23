@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 public enum LexerTokenType {
     FUNC ("func"),
+    EXEC ("exec"),
     RETURN ("return"),
     OP ("^(\\-|\\+|\\*|\\/)"),
     COMP_OP("(==|!=|<=|>=|<|>)"),
