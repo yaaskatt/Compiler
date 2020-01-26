@@ -31,8 +31,8 @@ public class InterpreterTest {
         input.add(new ParserToken(INT, "2"));
         input.add(new ParserToken(EXEC, "exec"));
         input.add(new ParserToken(RETURN, "return"));
-        Interpreter interpreter = new Interpreter();
-        Assert.assertEquals(6, interpreter.count(input));
+        Interpreter interpreter = new Interpreter(input);
+        Assert.assertEquals(6, interpreter.count());
     }
 
     @Test
@@ -41,8 +41,8 @@ public class InterpreterTest {
         input.add(new ParserToken(INT, "1"));
         input.add(new ParserToken(RETURN, "1"));
 
-        Interpreter interpreter = new Interpreter();
-        Assert.assertEquals(1, interpreter.count(input));
+        Interpreter interpreter = new Interpreter(input);
+        Assert.assertEquals(1, interpreter.count());
     }
 
     @Test
@@ -50,8 +50,8 @@ public class InterpreterTest {
         ArrayList<ParserToken> input = new ArrayList<>();
         input.add(new ParserToken(INT, "1"));
 
-        Interpreter interpreter = new Interpreter();
-        Assert.assertEquals(0, interpreter.count(input));
+        Interpreter interpreter = new Interpreter(input);
+        Assert.assertEquals(0, interpreter.count());
     }
 
     @Test
@@ -83,8 +83,8 @@ public class InterpreterTest {
         input.add(new ParserToken(RETURN, "return"));
 
 
-        Interpreter interpreter = new Interpreter();
-        Assert.assertEquals(16, interpreter.count(input));
+        Interpreter interpreter = new Interpreter(input);
+        Assert.assertEquals(16, interpreter.count());
     }
 
     @Test
@@ -104,8 +104,7 @@ public class InterpreterTest {
         input.add(new ParserToken(INT, "0"));
         input.add(new ParserToken(THREAD, "thread"));
 
-        Interpreter interpreter = new Interpreter();
-        interpreter.count(input);
-
+        Interpreter interpreter = new Interpreter(input);
+        interpreter.count();
     }
 }

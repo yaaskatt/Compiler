@@ -2,7 +2,7 @@ package mirea.table;
 
 import mirea.parser.ParserTokenType;
 
-public class Record {
+public class Record implements Cloneable{
     private String name;
     private Object value;
     private ParserTokenType type;
@@ -11,6 +11,11 @@ public class Record {
         this.name = name;
         this.value = value;
         this.type = type;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override

@@ -18,27 +18,33 @@ import mirea.table.FuncHolder;
 import mirea.table.Record;
 import mirea.table.SymbolTable;
 
-class Interpreter {
+class Interpreter implements Runnable{
 
     private LinkedList<ParserToken> stack = new LinkedList<>();
     private SymbolTable symbolTable = new SymbolTable();
     private HashMap<String, FuncHolder> functions = new HashMap<>();
     private Logger logger = Logger.getLogger(Interpreter.class.getName());
     private Calculator calculator = new Calculator(symbolTable, logger);
+    private final List<ParserToken> parserTokenList;
 
     /* Перенаправляет стандартный поток вывода в filename */
-    Interpreter(String filename){
+    Interpreter(List<ParserToken> input){
+        this.parserTokenList = input;
+    }
+
+    public void setOut(String filename) {
         try {
             System.setOut(new PrintStream(filename));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
-    Interpreter(){
+
+    public void setStdOut() {
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
     }
 
-    public int count(List<ParserToken> parserTokenList) throws Exception {
+    public int count() throws Exception {
         for (int i = 0; i < parserTokenList.size(); i++) {
             ParserToken token = parserTokenList.get(i);
              switch (token.getType()) {
@@ -63,11 +69,44 @@ class Interpreter {
                  case RETURN: return Integer.parseInt(stack.pop().getValue());
                  case FUNC: i = makeFunc(i, parserTokenList); break;
                  case EXEC: execFunc(); break;
+                 case THREAD: execThread(); break;
                  default: throw new Exception("Unsupported type: " + token.getType());
              }
          }
          return 0;
      }
+
+    private void execThread() throws Exception {
+        int argc = Integer.parseInt(stack.pop().getValue());
+        ArrayList<ParserToken> args = new ArrayList<>();
+        for (int i = 0; i < argc; i++) {
+            args.add(stack.pop());
+        }
+        String name = stack.pop().getValue();
+        FuncHolder funcHolder = functions.get(name);
+        if (funcHolder == null) throw new Exception("no function definition '" + name + "' found");
+        ArrayList<Record> funcHolderArgs = funcHolder.getArgs();
+        if (argc != funcHolderArgs.size()) throw new Exception("wrong number of arguments in " +
+                "function  '" + name + "' call");
+        for (int i = 0; i < argc; i++) {
+            funcHolderArgs.get(i).setValue(args.get(i).getValue()); //TODO: add type checks
+        }
+        SymbolTable localFuncTable =  new SymbolTable();
+        localFuncTable.insertAll(symbolTable.flatten().values());
+        localFuncTable.insertSymbols(funcHolderArgs);
+        Interpreter funcInterpreter = new Interpreter(funcHolder.getBody());
+        funcInterpreter.setSymbolTable(localFuncTable);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    funcInterpreter.count();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     private void execFunc() throws Exception {
         int argc = Integer.parseInt(stack.pop().getValue());
@@ -84,12 +123,12 @@ class Interpreter {
         for (int i = 0; i < argc; i++) {
             funcHolderArgs.get(i).setValue(args.get(i).getValue()); //TODO: add type checks
         }
-        Interpreter funcInterpreter = new Interpreter();
-        symbolTable.enterScope();
-        symbolTable.insertSymbols(funcHolderArgs);
-        funcInterpreter.setSymbolTable(symbolTable);
-        int result = funcInterpreter.count(funcHolder.getBody());
-        symbolTable.exitScope();
+        SymbolTable localFuncTable =  new SymbolTable();
+        localFuncTable.insertAll(symbolTable.flatten().values());
+        localFuncTable.insertSymbols(funcHolderArgs);
+        Interpreter funcInterpreter = new Interpreter(funcHolder.getBody());
+        funcInterpreter.setSymbolTable(localFuncTable);
+        int result = funcInterpreter.count();
         if (funcHolder.getReturnValue() != null) stack.push(new ParserToken(INT, "" + result));
     }
 
@@ -201,5 +240,10 @@ class Interpreter {
         logger.fine("Got value for " + token.getType() + " " + token.getValue() +
                 ": " + rec.getType() + " " + rec.getValue());
         return new ParserToken(rec.getType(), rec.getValue().toString());
+    }
+
+    @Override
+    public void run() {
+
     }
 }

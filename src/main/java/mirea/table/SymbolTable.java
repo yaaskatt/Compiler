@@ -2,6 +2,7 @@ package mirea.table;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 
 
@@ -26,7 +27,7 @@ public class SymbolTable {
         tables.get(position).put(record.getName(), record);
     }
 
-    public void insertAll(ArrayList<Record> records){
+    public void insertAll(Collection<Record> records){
         records.forEach(record -> tables.get(position).put(record.getName(), record));
     }
 
@@ -47,7 +48,7 @@ public class SymbolTable {
         for (int i = position; i >= 0; i--){
             if ((result = tables.get(i).get(name)) != null) return result;
         }
-        return  null;
+        return null;
     }
 
     public Record localLookup(String name) {
@@ -64,5 +65,13 @@ public class SymbolTable {
 
     public void insertSymbols(ArrayList<Record> args) {
         args.forEach(this::insertSymbol);
+    }
+
+    public HashMap<String, Record> flatten() {
+        HashMap<String, Record> result = new HashMap<>();
+        for (int i = 0; i <= position; i++){
+            result.putAll(this.tables.get(i));
+        }
+        return result;
     }
 }

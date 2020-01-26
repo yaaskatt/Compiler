@@ -56,4 +56,16 @@ public class SymbolTableTest {
         assertEquals( test, symbolTable.lookup("a"));
         assertNull(symbolTable.lookup("b"));
     }
+
+    @Test
+    public void flatten() {
+        SymbolTable table = new SymbolTable();
+        table.insertSymbol(new Record("a", null, null));
+        table.enterScope();
+        table.insertSymbol(new Record("b", null, null));
+        SymbolTable flatten = new SymbolTable();
+        flatten.insertAll(table.flatten().values());
+        Assert.assertNotNull("a null", flatten.lookup("a"));
+        Assert.assertNotNull("b null", flatten.lookup("b"));
+    }
 }
