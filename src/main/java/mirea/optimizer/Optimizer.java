@@ -84,13 +84,20 @@ public class Optimizer {
                     continue;
 
                 case TRANS:
-                    if (curTriad.getOp().getValue().equals("!")) {
-                        List<Triad> toReplace = triadList.subList(i - origTempList.size(), i);
-                        triadList.removeAll(toReplace);
-                        triadList.addAll(i - origTempList.size(), origTempList);
-                        logger.info(origTempList.size() + " VALUE(S) RESTORED" + "\n");
-                        origTempList.clear();
+                    if (curTriad.getOp().getValue().equals("!F")) {
+                        Triad ref = triadList.get(Integer.parseInt(curTriad.getT1().getValue()));
+                        if (ref.getOp().getType() == CONST && ref.getOp().getValue().equals("1")) {
+                            curTriad.setOp(new ParserToken(TRANS, "!"));
+                            curTriad.setT1(curTriad.getT2());
+                            curTriad.setT2(new ParserToken());
+                            continue;
+                        }
                     }
+                    List<Triad> toReplace = triadList.subList(i - origTempList.size(), i);
+                    triadList.removeAll(toReplace);
+                    triadList.addAll(i - origTempList.size(), origTempList);
+                    logger.info(origTempList.size() + " VALUE(S) RESTORED" + "\n");
+                    origTempList.clear();
                     continue;
             }
 
