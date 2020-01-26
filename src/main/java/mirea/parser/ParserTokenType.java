@@ -2,6 +2,8 @@ package mirea.parser;
 
 public enum ParserTokenType {
     FUNC,
+    EXEC,
+    THREAD,
     RETURN,
     INT,
     DOUBLE,
@@ -18,5 +20,4 @@ public enum ParserTokenType {
     REF,
     CONST,
     BLANK,
-    EXEC
 }

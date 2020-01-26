@@ -4,3 +4,4 @@ func a(int b, int c, int l) {
 }
 int sum;
 sum = (exec a(5, 3, 1)) + (exec a(3, 2, 1));
+thread a(1, 2);
