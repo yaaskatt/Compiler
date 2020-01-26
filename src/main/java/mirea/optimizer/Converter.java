@@ -56,6 +56,7 @@ public class Converter {
                     break;
                 case FUNC:
                 case EXEC:
+                case THREAD:
                     func(triadList, tokenList, corr, i, difference);
                     break;
                 case ENTER_SCOPE:
@@ -140,8 +141,6 @@ public class Converter {
 
         return tokenList;
     }
-
-
 
     private static List<Triad> singleOp(List<Triad> triadList, List<ParserToken> token, HashMap<Integer, Integer> corr, int i, int dif) {
         triadList.add(new Triad(token.get(i), token.get(i-1), new ParserToken()));
