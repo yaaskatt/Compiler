@@ -19,7 +19,7 @@ public class OptimizerTest {
         List<LexerToken> lexerTokenList = lexer.getAllTokens();
         assertFalse(lexerTokenList.isEmpty());
         for (LexerToken lexerToken : lexerTokenList) {
-            System.out.printf("tokenType: %s, lexema: %s\n", lexerToken.getType(), lexerToken.getValue());
+            System.err.printf("tokenType: %s, lexema: %s\n", lexerToken.getType(), lexerToken.getValue());
         }
         Parser parser = new Parser(lexerTokenList);
         List<ParserToken> parserTokenList = (parser.lang());
@@ -28,7 +28,7 @@ public class OptimizerTest {
 
         for (int i=0; i<triads.size(); i++) {
             Triad tr = triads.get(i);
-            System.out.printf("%d: %s %s (%s %s, %s %s)\n", i, tr.getOp().getType(), tr.getOp().getValue(),
+            System.err.printf("%d: %s %s (%s %s, %s %s)\n", i, tr.getOp().getType(), tr.getOp().getValue(),
                     tr.getT1().getType(), tr.getT1().getValue(), tr.getT2().getType(), tr.getT2().getValue());
         }
         Optimizer opt = new Optimizer();
@@ -37,13 +37,10 @@ public class OptimizerTest {
         } catch (Exception e) {};
         for (int i=0; i<triads.size(); i++) {
             Triad tr = triads.get(i);
-            System.out.printf("%d: %s %s (%s %s, %s %s)\n", i, tr.getOp().getType(), tr.getOp().getValue(),
+            System.err.printf("%d: %s %s (%s %s, %s %s)\n", i, tr.getOp().getType(), tr.getOp().getValue(),
                     tr.getT1().getType(), tr.getT1().getValue(), tr.getT2().getType(), tr.getT2().getValue());
         }
         parserTokenList = conv.triads_toReverseNot(triads);
-        for (int i = 0; i< parserTokenList.size(); i++) {
-            System.out.printf("%d: type: %s, value: %s\n", i, parserTokenList.get(i).getType(), parserTokenList.get(i).getValue());
-        }
     }
 
 }
