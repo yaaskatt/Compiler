@@ -68,6 +68,7 @@ public class Optimizer {
                     continue;
                 case EXIT_SCOPE:
                     constantsTable.exitScope();
+                    origTempList.clear();
                     continue;
                 case DEF:
                     Object value = null;

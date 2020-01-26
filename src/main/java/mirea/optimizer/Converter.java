@@ -170,6 +170,7 @@ public class Converter {
         for (int j = i - argNum - 2; j < i; j++) {
             triadList.add(new Triad(new ParserToken(CONST, "arg"), token.get(j), new ParserToken()));
             token.set(j, new ParserToken(REF, triadList.size()-1 + ""));
+            corr.put(j + dif, triadList.size()-1);
         }
         triadList.add(new Triad(token.get(i), new ParserToken(), new ParserToken()));
         token.set(i, new ParserToken(REF, triadList.size()-1 + ""));
