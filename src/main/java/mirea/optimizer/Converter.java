@@ -50,6 +50,9 @@ public class Converter {
                             break;
                     }
                     break;
+                case FUNC:
+                    func(triadList, tokenList, corr, i, difference);
+                    break;
                 case ENTER_SCOPE:
                 case EXIT_SCOPE:
                     triadList.add(new Triad(tokenList.get(i),new ParserToken(), new ParserToken()));
@@ -151,5 +154,16 @@ public class Converter {
         return triadList;
     }
 
+    private static List<Triad> func(List<Triad> triadList, List<ParserToken> token, HashMap<Integer, Integer> corr, int i, int dif) {
+        int argNum = Integer.parseInt(token.get(i-1).getValue());
+        for (int j = i - argNum - 2; j < i; j++) {
+            triadList.add(new Triad(new ParserToken(CONST, "const"), token.get(j), new ParserToken()));
+            token.set(j, new ParserToken(REF, triadList.size()-1 + ""));
+        }
+        triadList.add(new Triad(token.get(i), new ParserToken(), new ParserToken()));
+        token.set(i, new ParserToken(REF, triadList.size()-1 + ""));
+        corr.put(i + dif, triadList.size()-1);
+        return triadList;
+    }
 }
 
