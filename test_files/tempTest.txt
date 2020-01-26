@@ -1,5 +1,10 @@
+int k;
+k = 5;
 func a(int b, int c, int l) {
     b = b + c;
     return b;
+}
+if (k > 4) then {
+    exec a(k, 5, 3);
 }
 int sum;

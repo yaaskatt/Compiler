@@ -41,6 +41,9 @@ public class OptimizerTest {
                     tr.getT1().getType(), tr.getT1().getValue(), tr.getT2().getType(), tr.getT2().getValue());
         }
         parserTokenList = conv.triads_toReverseNot(triads);
+        for (int i = 0; i< parserTokenList.size(); i++) {
+            System.err.printf("%d: type: %s, value: %s\n", i, parserTokenList.get(i).getType(), parserTokenList.get(i).getValue());
+        }
     }
 
 }

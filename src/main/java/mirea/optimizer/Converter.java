@@ -50,7 +50,12 @@ public class Converter {
                             break;
                     }
                     break;
+                case RETURN:
+                    triadList = singleOp(triadList, tokenList, corr, i, difference);
+                    i--;
+                    break;
                 case FUNC:
+                case EXEC:
                     func(triadList, tokenList, corr, i, difference);
                     break;
                 case ENTER_SCOPE:
@@ -82,14 +87,21 @@ public class Converter {
         List<ParserToken> tokenList = new ArrayList<>();
         for (int i = 0; i < triadList.size(); i++) {
             Triad curTriad = triadList.get(i);
-            if (curTriad.getOp().getType() == CONST) continue;
+            if (curTriad.getOp().getValue().equals("const")) continue;
 
             int begin = tokenList.size();
 
             if (curTriad.getT1().getType() == REF) {
                 Triad ref = triadList.get(Integer.parseInt(curTriad.getT1().getValue()));
-                begin = Integer.parseInt(ref.getT1().getValue());
-                replaceRef(ref, tokenList);
+
+                if (ref.getOp().getType() == CONST && curTriad.getOp().getValue().equals("!F")) {
+                    if (ref.getOp().getValue().equals("0")) tokenList.add(new ParserToken(TRANS, "!"));
+                    else continue;
+                }
+                else {
+                    begin = Integer.parseInt(ref.getT1().getValue());
+                    replaceRef(ref, tokenList);
+                }
             }
             else if (curTriad.getT1().notBlank()) {
                 tokenList.add(curTriad.getT1());
@@ -106,7 +118,7 @@ public class Converter {
                 tokenList.add(curTriad.getT2());
             }
 
-            tokenList.add(curTriad.getOp());
+            if (!curTriad.getOp().getValue().equals("arg")) tokenList.add(curTriad.getOp());
             int end = tokenList.size();
 
             triadList.set(i, new Triad(new ParserToken(REF, ""),
@@ -157,7 +169,7 @@ public class Converter {
     private static List<Triad> func(List<Triad> triadList, List<ParserToken> token, HashMap<Integer, Integer> corr, int i, int dif) {
         int argNum = Integer.parseInt(token.get(i-1).getValue());
         for (int j = i - argNum - 2; j < i; j++) {
-            triadList.add(new Triad(new ParserToken(CONST, "const"), token.get(j), new ParserToken()));
+            triadList.add(new Triad(new ParserToken(CONST, "arg"), token.get(j), new ParserToken()));
             token.set(j, new ParserToken(REF, triadList.size()-1 + ""));
         }
         triadList.add(new Triad(token.get(i), new ParserToken(), new ParserToken()));

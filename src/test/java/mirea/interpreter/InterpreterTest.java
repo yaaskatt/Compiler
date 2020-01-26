@@ -25,12 +25,12 @@ public class InterpreterTest {
         input.add(new ParserToken(ParserTokenType.OP, "+"));
         input.add(new ParserToken(ParserTokenType.RETURN, "return"));
         input.add(new ParserToken(ParserTokenType.EXIT_SCOPE, "}"));
+        input.add(new ParserToken(ParserTokenType.STRING, "foo"));
         input.add(new ParserToken(ParserTokenType.INT, "2"));
         input.add(new ParserToken(ParserTokenType.INT, "4"));
-        input.add(new ParserToken(ParserTokenType.STRING, "foo"));
+        input.add(new ParserToken(ParserTokenType.INT, "2"));
         input.add(new ParserToken(ParserTokenType.EXEC, "exec"));
         input.add(new ParserToken(ParserTokenType.RETURN, "return"));
-
         Interpreter interpreter = new Interpreter();
         Assert.assertEquals(6, interpreter.count(input));
     }
@@ -75,9 +75,10 @@ public class InterpreterTest {
         input.add(new ParserToken(ParserTokenType.ADR, "c"));
         input.add(new ParserToken(ParserTokenType.INT, "10"));
         input.add(new ParserToken(ParserTokenType.OP, "="));
+        input.add(new ParserToken(ParserTokenType.STRING, "foo"));
         input.add(new ParserToken(ParserTokenType.INT, "2"));
         input.add(new ParserToken(ParserTokenType.INT, "4"));
-        input.add(new ParserToken(ParserTokenType.STRING, "foo"));
+        input.add(new ParserToken(ParserTokenType.INT, "2"));
         input.add(new ParserToken(ParserTokenType.EXEC, "exec"));
         input.add(new ParserToken(ParserTokenType.RETURN, "return"));
 

@@ -216,11 +216,14 @@ public class Parser {
 
     private boolean func_agrs() {
         int begNum = num;
+        int argsNum = 0;
         if (VAR() && L_RB()) {
             while (value_stmt()) {
+                argsNum++;
                 COMMA();
             }
             if (R_RB()) {
+                parserTokenList.add(new ParserToken(ParserTokenType.INT, argsNum + ""));
                 return true;
             }
         }

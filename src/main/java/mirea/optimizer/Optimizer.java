@@ -84,11 +84,13 @@ public class Optimizer {
                     continue;
 
                 case TRANS:
-                    List<Triad> toReplace = triadList.subList(i - origTempList.size(), i);
-                    triadList.removeAll(toReplace);
-                    triadList.addAll(i - origTempList.size(), origTempList);
-                    logger.info(origTempList.size() + " VALUE(S) RESTORED" + "\n");
-                    origTempList.clear();
+                    if (curTriad.getOp().getValue().equals("!")) {
+                        List<Triad> toReplace = triadList.subList(i - origTempList.size(), i);
+                        triadList.removeAll(toReplace);
+                        triadList.addAll(i - origTempList.size(), origTempList);
+                        logger.info(origTempList.size() + " VALUE(S) RESTORED" + "\n");
+                        origTempList.clear();
+                    }
                     continue;
             }
 

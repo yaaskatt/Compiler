@@ -62,22 +62,31 @@ class Interpreter {
                      break;
                  case RETURN: return Integer.parseInt(stack.pop().getValue());
                  case FUNC: i = makeFunc(i, parserTokenList); break;
-                 case EXEC: execFunc(stack.pop().getValue()); break;
+                 case EXEC: execFunc(); break;
                  default: throw new Exception("Unsupported type: " + token.getType());
              }
          }
          return 0;
      }
 
-    private void execFunc(String name) throws Exception {
+    private void execFunc() throws Exception {
+        int argc = Integer.parseInt(stack.pop().getValue());
+        ArrayList<ParserToken> args = new ArrayList<>();
+        for (int i = 0; i < argc; i++) {
+            args.add(stack.pop());
+        }
+        String name = stack.pop().getValue();
         FuncHolder funcHolder = functions.get(name);
         if (funcHolder == null) throw new Exception("no function definition '" + name + "' found");
-        for (Record arg : funcHolder.getArgs()) {
-            arg.setValue(stack.pop().getValue()); //TODO: add type checks
+        ArrayList<Record> funcHolderArgs = funcHolder.getArgs();
+        if (argc != funcHolderArgs.size()) throw new Exception("wrong number of arguments in " +
+                "function  '" + name + "' call");
+        for (int i = 0; i < argc; i++) {
+            funcHolderArgs.get(i).setValue(args.get(i).getValue()); //TODO: add type checks
         }
         Interpreter funcInterpreter = new Interpreter();
         symbolTable.enterScope();
-        symbolTable.insertSymbols(funcHolder.getArgs());
+        symbolTable.insertSymbols(funcHolderArgs);
         funcInterpreter.setSymbolTable(symbolTable);
         int result = funcInterpreter.count(funcHolder.getBody());
         symbolTable.exitScope();
