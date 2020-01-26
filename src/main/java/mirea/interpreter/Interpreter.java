@@ -93,6 +93,7 @@ class Interpreter implements Runnable{
         }
         SymbolTable localFuncTable =  new SymbolTable();
         localFuncTable.insertAll(symbolTable.flatten().values());
+        localFuncTable.enterScope();
         localFuncTable.insertSymbols(funcHolderArgs);
         Interpreter funcInterpreter = new Interpreter(funcHolder.getBody());
         funcInterpreter.setSymbolTable(localFuncTable);
@@ -125,6 +126,7 @@ class Interpreter implements Runnable{
         }
         SymbolTable localFuncTable =  new SymbolTable();
         localFuncTable.insertAll(symbolTable.flatten().values());
+        localFuncTable.enterScope();
         localFuncTable.insertSymbols(funcHolderArgs);
         Interpreter funcInterpreter = new Interpreter(funcHolder.getBody());
         funcInterpreter.setSymbolTable(localFuncTable);
