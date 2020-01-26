@@ -1,7 +1,7 @@
 package mirea.interpreter;
 
 import mirea.parser.ParserToken;
-import mirea.parser.ParserTokenType;
+import static mirea.parser.ParserTokenType.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,23 +14,23 @@ public class InterpreterTest {
     @Test
     public void funcTest() throws Exception {
         ArrayList<ParserToken> input = new ArrayList<>();
-        input.add(new ParserToken(ParserTokenType.STRING, "foo"));  //
-        input.add(new ParserToken(ParserTokenType.INT, "a"));       // argv...
-        input.add(new ParserToken(ParserTokenType.INT, "b"));       //
-        input.add(new ParserToken(ParserTokenType.INT, "2"));       // argc
-        input.add(new ParserToken(ParserTokenType.FUNC, "func"));
-        input.add(new ParserToken(ParserTokenType.ENTER_SCOPE, "{"));
-        input.add(new ParserToken(ParserTokenType.VAR, "a"));
-        input.add(new ParserToken(ParserTokenType.VAR, "b"));
-        input.add(new ParserToken(ParserTokenType.OP, "+"));
-        input.add(new ParserToken(ParserTokenType.RETURN, "return"));
-        input.add(new ParserToken(ParserTokenType.EXIT_SCOPE, "}"));
-        input.add(new ParserToken(ParserTokenType.STRING, "foo"));
-        input.add(new ParserToken(ParserTokenType.INT, "2"));
-        input.add(new ParserToken(ParserTokenType.INT, "4"));
-        input.add(new ParserToken(ParserTokenType.INT, "2"));
-        input.add(new ParserToken(ParserTokenType.EXEC, "exec"));
-        input.add(new ParserToken(ParserTokenType.RETURN, "return"));
+        input.add(new ParserToken(STRING, "foo"));  //
+        input.add(new ParserToken(INT, "a"));       // argv...
+        input.add(new ParserToken(INT, "b"));       //
+        input.add(new ParserToken(INT, "2"));       // argc
+        input.add(new ParserToken(FUNC, "func"));
+        input.add(new ParserToken(ENTER_SCOPE, "{"));
+        input.add(new ParserToken(VAR, "a"));
+        input.add(new ParserToken(VAR, "b"));
+        input.add(new ParserToken(OP, "+"));
+        input.add(new ParserToken(RETURN, "return"));
+        input.add(new ParserToken(EXIT_SCOPE, "}"));
+        input.add(new ParserToken(STRING, "foo"));
+        input.add(new ParserToken(INT, "2"));
+        input.add(new ParserToken(INT, "4"));
+        input.add(new ParserToken(INT, "2"));
+        input.add(new ParserToken(EXEC, "exec"));
+        input.add(new ParserToken(RETURN, "return"));
         Interpreter interpreter = new Interpreter();
         Assert.assertEquals(6, interpreter.count(input));
     }
@@ -38,8 +38,8 @@ public class InterpreterTest {
     @Test
     public void returnTest() throws Exception {
         ArrayList<ParserToken> input = new ArrayList<>();
-        input.add(new ParserToken(ParserTokenType.INT, "1"));
-        input.add(new ParserToken(ParserTokenType.RETURN, "1"));
+        input.add(new ParserToken(INT, "1"));
+        input.add(new ParserToken(RETURN, "1"));
 
         Interpreter interpreter = new Interpreter();
         Assert.assertEquals(1, interpreter.count(input));
@@ -48,7 +48,7 @@ public class InterpreterTest {
     @Test
     public void noReturnTest() throws Exception {
         ArrayList<ParserToken> input = new ArrayList<>();
-        input.add(new ParserToken(ParserTokenType.INT, "1"));
+        input.add(new ParserToken(INT, "1"));
 
         Interpreter interpreter = new Interpreter();
         Assert.assertEquals(0, interpreter.count(input));
@@ -57,33 +57,55 @@ public class InterpreterTest {
     @Test
     public void globalVarTest() throws Exception {
         ArrayList<ParserToken> input = new ArrayList<>();
-        input.add(new ParserToken(ParserTokenType.STRING, "foo"));  //
-        input.add(new ParserToken(ParserTokenType.INT, "a"));       // argv...
-        input.add(new ParserToken(ParserTokenType.INT, "b"));       //
-        input.add(new ParserToken(ParserTokenType.INT, "2"));       // argc
-        input.add(new ParserToken(ParserTokenType.FUNC, "func"));
-        input.add(new ParserToken(ParserTokenType.ENTER_SCOPE, "{"));
-        input.add(new ParserToken(ParserTokenType.VAR, "a"));
-        input.add(new ParserToken(ParserTokenType.VAR, "b"));
-        input.add(new ParserToken(ParserTokenType.VAR, "c"));
-        input.add(new ParserToken(ParserTokenType.OP, "+"));
-        input.add(new ParserToken(ParserTokenType.OP, "+"));
-        input.add(new ParserToken(ParserTokenType.RETURN, "return"));
-        input.add(new ParserToken(ParserTokenType.EXIT_SCOPE, "}"));
-        input.add(new ParserToken(ParserTokenType.INT, "c"));
-        input.add(new ParserToken(ParserTokenType.DEF, "int"));
-        input.add(new ParserToken(ParserTokenType.ADR, "c"));
-        input.add(new ParserToken(ParserTokenType.INT, "10"));
-        input.add(new ParserToken(ParserTokenType.OP, "="));
-        input.add(new ParserToken(ParserTokenType.STRING, "foo"));
-        input.add(new ParserToken(ParserTokenType.INT, "2"));
-        input.add(new ParserToken(ParserTokenType.INT, "4"));
-        input.add(new ParserToken(ParserTokenType.INT, "2"));
-        input.add(new ParserToken(ParserTokenType.EXEC, "exec"));
-        input.add(new ParserToken(ParserTokenType.RETURN, "return"));
+        input.add(new ParserToken(STRING, "foo"));  //
+        input.add(new ParserToken(INT, "a"));       // argv...
+        input.add(new ParserToken(INT, "b"));       //
+        input.add(new ParserToken(INT, "2"));       // argc
+        input.add(new ParserToken(FUNC, "func"));
+        input.add(new ParserToken(ENTER_SCOPE, "{"));
+        input.add(new ParserToken(VAR, "a"));
+        input.add(new ParserToken(VAR, "b"));
+        input.add(new ParserToken(VAR, "c"));
+        input.add(new ParserToken(OP, "+"));
+        input.add(new ParserToken(OP, "+"));
+        input.add(new ParserToken(RETURN, "return"));
+        input.add(new ParserToken(EXIT_SCOPE, "}"));
+        input.add(new ParserToken(INT, "c"));
+        input.add(new ParserToken(DEF, "int"));
+        input.add(new ParserToken(ADR, "c"));
+        input.add(new ParserToken(INT, "10"));
+        input.add(new ParserToken(OP, "="));
+        input.add(new ParserToken(STRING, "foo"));
+        input.add(new ParserToken(INT, "2"));
+        input.add(new ParserToken(INT, "4"));
+        input.add(new ParserToken(INT, "2"));
+        input.add(new ParserToken(EXEC, "exec"));
+        input.add(new ParserToken(RETURN, "return"));
 
 
         Interpreter interpreter = new Interpreter();
         Assert.assertEquals(16, interpreter.count(input));
+    }
+
+    @Test
+    public void threadTest() throws Exception {
+        ArrayList<ParserToken> input = new ArrayList<>();
+        input.add(new ParserToken(STRING, "foo"));  //
+        input.add(new ParserToken(INT, "0"));       // argc
+        input.add(new ParserToken(FUNC, "func"));
+        input.add(new ParserToken(ENTER_SCOPE, "{"));
+        input.add(new ParserToken(STRING, "Thread started"));
+        input.add(new ParserToken(OP, "print"));
+        input.add(new ParserToken(EXIT_SCOPE, "}"));
+        input.add(new ParserToken(STRING, "foo"));
+        input.add(new ParserToken(INT, "0"));
+        input.add(new ParserToken(THREAD, "thread"));
+        input.add(new ParserToken(STRING, "foo"));
+        input.add(new ParserToken(INT, "0"));
+        input.add(new ParserToken(THREAD, "thread"));
+
+        Interpreter interpreter = new Interpreter();
+        interpreter.count(input);
+
     }
 }
