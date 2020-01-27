@@ -97,16 +97,18 @@ class Interpreter implements Runnable{
         localFuncTable.insertSymbols(funcHolderArgs);
         Interpreter funcInterpreter = new Interpreter(funcHolder.getBody());
         funcInterpreter.setSymbolTable(localFuncTable);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    funcInterpreter.count();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        funcInterpreter.setFuncs(functions);
+        new Thread(() -> {
+            try {
+                funcInterpreter.count();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
+    }
+
+    private void setFuncs(HashMap<String, FuncHolder> functions) {
+        this.functions.putAll(functions);
     }
 
     private void execFunc() throws Exception {
@@ -130,6 +132,7 @@ class Interpreter implements Runnable{
         localFuncTable.insertSymbols(funcHolderArgs);
         Interpreter funcInterpreter = new Interpreter(funcHolder.getBody());
         funcInterpreter.setSymbolTable(localFuncTable);
+        funcInterpreter.setFuncs(functions);
         int result = funcInterpreter.count();
         if (funcHolder.getReturnValue() != null) stack.push(new ParserToken(INT, "" + result));
     }
@@ -146,11 +149,14 @@ class Interpreter implements Runnable{
         List<ParserToken> body = new ArrayList<>();
         ParserToken returnVal = null;
         ParserToken current;
+        int bracesCount = 0;
         do {
             current = parserTokenList.get(++pos);
             if (current.getType().equals(RETURN)) returnVal = current;
+            if (current.getType().equals(ENTER_SCOPE)) bracesCount++;
+            if (current.getType().equals(EXIT_SCOPE)) bracesCount--;
             body.add(current);
-        } while (!(current.getType().equals(EXIT_SCOPE)));
+        } while (!(bracesCount == 0));
         functions.put(name, new FuncHolder(name, args, returnVal, body));
         //symbolTable.insertSymbol(new Record("func", name, FUNC));
         return pos;

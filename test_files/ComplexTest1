@@ -1,9 +1,9 @@
 List k;
 int a;
-a = 1;
+a = 0;
 func f(int i) {
     print "func";
-    i = i + 2;
+    i = i + 1;
     return i;
 }
 
@@ -11,12 +11,12 @@ func hello() {
     print "hello";
 }
 
+thread hello();
 while (a < 5) do {
     print "cycle";
     a = exec f(a);
 }
 
-thread hello();
 int b;
 b = 8;
 k.add(b);

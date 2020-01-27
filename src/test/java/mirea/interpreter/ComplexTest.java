@@ -20,7 +20,7 @@ public class ComplexTest {
     @Test
     public void compTest() throws Exception {
 
-        Lexer lexer = new Lexer(testFolder + "ComplexTest1");
+        Lexer lexer = new Lexer(testFolder + "ComplexTest");
         List<LexerToken> lexerTokenList = lexer.getAllTokens();
         Parser parser = new Parser(lexerTokenList);
         List<ParserToken> parserTokenList = (parser.lang());
