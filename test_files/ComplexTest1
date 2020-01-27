@@ -6,16 +6,13 @@ func f(int i) {
     i = i + 2;
     return i;
 }
-
 func hello() {
     print "hello";
 }
-
 while (a < 5) do {
     print "cycle";
     a = exec f(a);
 }
-
 thread hello();
 int b;
 b = 8;
