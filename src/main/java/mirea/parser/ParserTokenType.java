@@ -20,4 +20,5 @@ public enum ParserTokenType {
     REF,
     CONST,
     BLANK,
+    CONNECTION;
 }

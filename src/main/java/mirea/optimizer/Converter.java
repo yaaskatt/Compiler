@@ -57,11 +57,14 @@ public class Converter {
                 case FUNC:
                 case EXEC:
                 case THREAD:
-                    func(triadList, tokenList, corr, i, difference);
+                    int argNum = Integer.parseInt(tokenList.get(i-1).getValue());
+                    func(triadList, tokenList, corr, i, difference, argNum);
+                    i -= argNum + 2;
                     break;
                 case ENTER_SCOPE:
                 case EXIT_SCOPE:
                     triadList.add(new Triad(tokenList.get(i),new ParserToken(), new ParserToken()));
+                    corr.put(i + difference, triadList.size()-1);
                     break;
             }
         }
@@ -91,6 +94,12 @@ public class Converter {
             if (curTriad.getOp().getValue().equals("const")) continue;
 
             int begin = tokenList.size();
+
+
+            if (curTriad.getOp().getType() == FUNC || curTriad.getOp().getType() == EXEC ||
+                    curTriad.getOp().getType() == THREAD) {
+                begin = tokenList.size() - Integer.parseInt(tokenList.get(tokenList.size()-1).getValue()) - 2;
+            }
 
             if (curTriad.getT1().getType() == REF) {
                 Triad ref = triadList.get(Integer.parseInt(curTriad.getT1().getValue()));
@@ -142,10 +151,10 @@ public class Converter {
         return tokenList;
     }
 
-    private static List<Triad> singleOp(List<Triad> triadList, List<ParserToken> token, HashMap<Integer, Integer> corr, int i, int dif) {
-        triadList.add(new Triad(token.get(i), token.get(i-1), new ParserToken()));
-        token.remove(i);
-        token.set(i-1, new ParserToken(REF, triadList.size()-1 + ""));
+    private static List<Triad> singleOp(List<Triad> triadList, List<ParserToken> tokenList, HashMap<Integer, Integer> corr, int i, int dif) {
+        triadList.add(new Triad(tokenList.get(i), tokenList.get(i-1), new ParserToken()));
+        tokenList.remove(i);
+        tokenList.set(i-1, new ParserToken(REF, triadList.size()-1 + ""));
         for (int j=i+dif; j>=i+dif-1; j--) {
             if (corr.containsKey(j)) continue;
             corr.put(j, triadList.size()-1);
@@ -153,11 +162,11 @@ public class Converter {
         return triadList;
     }
 
-    private static List<Triad> doubleOp(List<Triad> triadList, List<ParserToken> token, HashMap<Integer, Integer> corr, int i, int dif) {
-        triadList.add(new Triad(token.get(i), token.get(i - 2), token.get(i - 1)));
-        token.remove(i);
-        token.remove(i-1);
-        token.set(i-2, new ParserToken(REF, triadList.size()-1 + ""));
+    private static List<Triad> doubleOp(List<Triad> triadList, List<ParserToken> tokenList, HashMap<Integer, Integer> corr, int i, int dif) {
+        triadList.add(new Triad(tokenList.get(i), tokenList.get(i - 2), tokenList.get(i - 1)));
+        tokenList.remove(i);
+        tokenList.remove(i-1);
+        tokenList.set(i-2, new ParserToken(REF, triadList.size()-1 + ""));
         for (int j=i+dif; j>=i+dif-2; j--) {
             if (corr.containsKey(j)) continue;
             corr.put(j, triadList.size()-1);
@@ -165,17 +174,24 @@ public class Converter {
         return triadList;
     }
 
-    private static List<Triad> func(List<Triad> triadList, List<ParserToken> token, HashMap<Integer, Integer> corr, int i, int dif) {
-        int argNum = Integer.parseInt(token.get(i-1).getValue());
-        for (int j = i - argNum - 2; j < i; j++) {
-            triadList.add(new Triad(new ParserToken(CONST, "arg"), token.get(j), new ParserToken()));
-            token.set(j, new ParserToken(REF, triadList.size()-1 + ""));
-            corr.put(j + dif, triadList.size()-1);
+    private static List<Triad> func(List<Triad> triadList, List<ParserToken> tokenList, HashMap<Integer, Integer> corr, int i, int dif, int argNum) {
+        int k = i - argNum - 2;
+        for (int j = 0; j < argNum + 2; j++) {
+            triadList.add(new Triad(new ParserToken(CONST, "arg"), tokenList.get(k), new ParserToken()));
+            tokenList.remove(k);
         }
-        triadList.add(new Triad(token.get(i), new ParserToken(), new ParserToken()));
-        token.set(i, new ParserToken(REF, triadList.size()-1 + ""));
+        triadList.add(new Triad(tokenList.get(k), new ParserToken(), new ParserToken()));
+        tokenList.set(k, new ParserToken(REF, triadList.size()-1 + ""));
         corr.put(i + dif, triadList.size()-1);
         return triadList;
+    }
+
+    private static List<ParserToken> getConnectedTokens(List<ParserToken> tokenList, List<Triad> triadList, Triad triad) {
+        if (triad.getT2().getType() == CONNECTION) {
+            tokenList = getConnectedTokens(tokenList, triadList, triadList.get(Integer.parseInt(triad.getT2().getValue())));
+        }
+        tokenList.add(triad.getT1());
+        return tokenList;
     }
 }
 

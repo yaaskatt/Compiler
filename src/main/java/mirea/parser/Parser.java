@@ -81,7 +81,8 @@ public class Parser {
 
     private boolean assign_stmt() {
         int begNum = num;
-        if (VAR() && ASSIGN_OP() && (value_stmt() || STRING()) && SEMI()) {
+        if (VAR() && ASSIGN_OP() && (value_stmt() || STRING())) {
+            SEMI();
             return true;
         }
         num = begNum;

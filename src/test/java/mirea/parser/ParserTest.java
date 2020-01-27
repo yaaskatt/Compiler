@@ -17,7 +17,7 @@ public class ParserTest {
 
     @Test
     public void lang() {
-        Lexer lexer = new Lexer(testFolder + "tempTest.txt");
+        Lexer lexer = new Lexer(testFolder + "ComplexTest");
         List<LexerToken> tokenList = lexer.getAllTokens();
         assertFalse(tokenList.isEmpty());
         for (LexerToken lexerToken : tokenList) {

@@ -1,0 +1,26 @@
+List k;
+int a;
+a = 1;
+func f(int i) {
+    print "func";
+    i = i + 2;
+    return i;
+}
+
+func hello() {
+    print "hello";
+}
+
+while (a < 5) do {
+    print "cycle";
+    a = exec f(a);
+}
+
+thread hello();
+int b;
+b = 8;
+k.add(b);
+k.add(2 + k.get(0));
+k.add(a);
+k.add(k.get(2) + k.get(1));
+print(k.get(3));

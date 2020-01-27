@@ -15,7 +15,7 @@ public class ConverterTest {
 
     @Test
     public void convTest() {
-        Lexer lexer = new Lexer(testFolder + "tempTest.txt");
+        Lexer lexer = new Lexer(testFolder + "ComplexTest");
         List<LexerToken> lexerTokenList = lexer.getAllTokens();
         assertFalse(lexerTokenList.isEmpty());
         for (LexerToken lexerToken : lexerTokenList) {

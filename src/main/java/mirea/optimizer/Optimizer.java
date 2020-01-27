@@ -65,6 +65,7 @@ public class Optimizer {
             switch(curTriad.getOp().getType()) {
                 case ENTER_SCOPE:
                     constantsTable.enterScope();
+                    origTempList.clear();
                     continue;
                 case EXIT_SCOPE:
                     constantsTable.exitScope();

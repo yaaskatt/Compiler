@@ -1,15 +1,15 @@
-List k;
 int a;
-a = 1;
-while (a < 5) do {
-    print "cycle";
-    a = a + 2;
+a = 5;
+func f(int i) {
+    print "func";
+    i = i + 2;
+    return i;
 }
-int b;
-b = 8;
-k.add(b);
-k.add(2 + k.get(0));
-k.add(a);
-k.add(k.get(2) + k.get(1));
-print(k.get(3));
+func cycle(int p) {
+    while (p < 5) do {
+        print "cycle";
+        p = exec f(p);
+    }
+}
+thread cycle(a);
 
